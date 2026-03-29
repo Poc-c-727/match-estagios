@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+   	<meta charset="UTF-8">
+   	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   	<title>Document</title>
+      {{ bootstrap.load_css() }}
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  </head>
+  <body class="d-flex align-items-center py-4 bg-body-tertiary vh-100">
+    <main class="form-signin w-100 m-auto">
+      <h2>Login</h2>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        {% include "components/flash_messages.html"%}
+        <div class="form-floating mb-2">
+          {{ form.email(class="form-control", id="email", placeholder="name@example.com")}}
+          {{ form.email.label(for="email") }}
+        </div>
+
+        <div class="form-floating mb-3">
+          {{ form.password(class="form-control", id="password", placeholder="Password") }}
+          {{ form.password.label(for="password") }}
+        </div>
+
+        <div>
+          {{ form.submit(class="btn btn-primary w-100 py-2", value="Sign in") }}
+        </div>
+      </form>
+
+    </main>
+
+    {{ bootstrap.load_js() }}
+  </body>
+</html>
