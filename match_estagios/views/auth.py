@@ -1,5 +1,3 @@
-from crypt import methods
-
 from flask.blueprints import Blueprint
 from flask.globals import request
 from flask.helpers import flash, redirect, url_for
@@ -8,7 +6,7 @@ from flask_login import login_user, logout_user
 
 from match_estagios.extensions import bcrypt, db
 from match_estagios.forms.auth import LoginForm, RegisterForm
-from match_estagios.models.user import User, UserRole
+from match_estagios.models.user import User, UserRole, UserStatus
 
 auth_bp = Blueprint("auth", __name__, template_folder="templates")
 
@@ -30,6 +28,7 @@ def register():
         user = User(
             name=form.name.data,
             email=form.email.data,
+            status=UserStatus.PENDENTE,
             password_hash=bcrypt.generate_password_hash(form.password.data, 12).decode(
                 "utf-8"
             ),
@@ -64,7 +63,7 @@ def login():
             login_user(user)
 
             next_page = request.args.get("next")
-            return redirect(next_page or url_for("main.root"))
+            return redirect(next_page or url_for("main.index"))
 
     return render_template("login.html", form=form)
 

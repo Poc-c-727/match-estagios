@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Document{% endblock %}</title>
-    {{ bootstrap.load_css() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {{ bootstrap.load_css() }}
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
     {% include 'components/header.html' %}
 
-    <main class="flex-shrink-0">
+    <main class="flex-shrink-0 {% block main_class %}{% endblock %}">
         {% block content %}{% endblock %}
     </main>
 

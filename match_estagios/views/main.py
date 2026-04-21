@@ -8,7 +8,7 @@ main_bp = Blueprint("main", __name__, template_folder="templates")
 
 
 @main_bp.route("/")
-def root():
+def index():
     if current_user.is_authenticated:
         return f"Logado como {current_user.email}"
     return "Não logado"
