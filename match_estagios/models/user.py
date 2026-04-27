@@ -7,7 +7,7 @@ from match_estagios.extensions import db
 
 
 class UserRole(Enum):
-    ADMIN = "admin"
+    MAINTAINER = "mantenedor"
     ESTUDANTE = "estudante"
     EMPRESA = "empresa"
     FACULDADE = "faculdade"

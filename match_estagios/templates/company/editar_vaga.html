@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Vaga{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Editar vaga</h2>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-2">
+      {{ form.titulo.label }}
+      {{ form.titulo(class="form-control") }}
+    </div>
+
+    <div class="mb-2">
+      {{ form.descricao.label }}
+      {{ form.descricao(class="form-control") }}
+    </div>
+
+    {{ form.bolsa.label }}
+    <div class="input-group mb-2">
+        <span class="input-group-text">R$</span>
+        {{ form.bolsa(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.modalidade.label }}
+      {{ form.modalidade(class="form-select") }}
+    </div>
+
+    <button class="btn btn-primary">Salvar alterações</button>
+    <a href="{{ url_for('company.listar_vagas') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

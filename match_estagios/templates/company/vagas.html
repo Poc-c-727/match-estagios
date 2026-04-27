@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Minhas Vagas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Minhas vagas</h2>
+
+  {% if vagas %}
+    <div class="list-group">
+      {% for vaga in vagas %}
+        <div class="list-group-item">
+          <h5>{{ vaga.titulo }}</h5>
+          <p>{{ vaga.descricao }}</p>
+
+          <small>
+            Bolsa: R$ {{ vaga.bolsa }} |
+            Modalidade: {{ vaga.modalidade.value if vaga.modalidade else vaga.modalidade }} |
+            Status: {{ vaga.status.value if vaga.status else vaga.status }}
+          </small>
+
+          <a href="{{ url_for('company.editar_vaga', id_vaga=vaga.id_vaga) }}"
+             class="btn btn-sm btn-warning">
+             Editar
+          </a>
+
+          <form method="POST"
+             action="{{ url_for('company.deletar_vaga', id_vaga=vaga.id_vaga) }}"
+             style="display: inline;"
+          >
+              {{ delete_form.hidden_tag() }}
+              <button type="submit" class="btn btn-sm btn-danger"
+                  onclick="return confirm('Tem certeza que deseja deletar esta vaga?')"
+              >
+                  Deletar
+              </button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Nenhuma vaga cadastrada.</p>
+  {% endif %}
+</div>
+{% endblock %}

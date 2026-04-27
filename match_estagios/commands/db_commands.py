@@ -19,10 +19,10 @@ def register_commands(app):
 
         # ADMIN
         admin = User(
-            name="Admin",
-            email="admin@email.com",
+            name="Mantenedor",
+            email="mantenedor@email.com",
             password_hash=bcrypt.generate_password_hash("123456").decode("utf-8"),
-            role=UserRole.ADMIN,
+            role=UserRole.MAINTAINER,
             status=UserStatus.VERIFICADO,
         )
 

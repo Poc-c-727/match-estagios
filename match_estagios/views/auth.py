@@ -43,7 +43,7 @@ def register():
 
     else:
         print("Erros:", form.errors)
-    return render_template("register.html", form=form)
+    return render_template("auth/register.html", form=form)
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -65,7 +65,7 @@ def login():
             next_page = request.args.get("next")
             return redirect(next_page or url_for("main.index"))
 
-    return render_template("login.html", form=form)
+    return render_template("auth/login.html", form=form)
 
 
 @auth_bp.route("/logout")

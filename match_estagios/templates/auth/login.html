@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}
-Login
-{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block body_class %}
 align-items-center py-4 bg-body-tertiary vh-100
@@ -15,7 +13,6 @@ align-items-center py-4 bg-body-tertiary vh-100
 <h2>Login</h2>
 <form method="POST">
   {{ form.hidden_tag() }}
-  {% include "components/flash_messages.html"%}
   <div class="form-floating mb-2">
     {{ form.email(class="form-control", id="email", placeholder="name@example.com")}}
     {{ form.email.label(for="email") }}
