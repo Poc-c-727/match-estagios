@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex">
+
+    <!--Sidebar-->
+    <div class="bg-light p-3 sidebar">
+        <h5>Painel</h5>
+        <ul class="nav flex-column">
+            <li><a href="{{ url_for('maintainer.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('maintainer.empresas') }}">Empresas</a></li>
+            <li><a href="{{ url_for('maintainer.usuarios') }}">Usuários</a></li>
+            <li><a href="{{ url_for('maintainer.vagas') }}">Vagas</a></li>
+        </ul>
+    </div>
+
+    <div class="flex-grow-1 p-4">
+        {% block maintainer_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

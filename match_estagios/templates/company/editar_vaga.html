@@ -30,6 +30,11 @@
       {{ form.modalidade(class="form-select") }}
     </div>
 
+    <div class="mb-3">
+      {{ form.status.label }}
+      {{ form.status(class="form-select") }}
+    </div>
+
     <button class="btn btn-primary">Salvar alterações</button>
     <a href="{{ url_for('company.listar_vagas') }}" class="btn btn-secondary">Cancelar</a>
   </form>

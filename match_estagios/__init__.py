@@ -15,6 +15,12 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+def format_currency(value):
+    if value is None:
+        return "0,00"
+    return "{:,.2f}".format(value).replace(",", "X").replace(".", ",").replace("X", ".")
+
+
 def create_app():
     # Instantiate Flask
     app = Flask(__name__)
@@ -41,5 +47,7 @@ def create_app():
     login_manager.login_view = "auth.login"  # type: ignore (pro meu editor de código T.T)
 
     from . import models
+
+    app.jinja_env.filters["currency"] = format_currency
 
     return app

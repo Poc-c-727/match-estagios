@@ -12,7 +12,10 @@ class Estudante(db.Model):
     telefone = db.Column(db.String(20))
 
     id_user = db.Column(
-        db.BigInteger, db.ForeignKey("users.id_user"), unique=True, nullable=False
+        db.BigInteger,
+        db.ForeignKey("users.id_user", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
     )
 
     # Relacionamento (1:1)

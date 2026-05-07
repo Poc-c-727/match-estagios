@@ -1,0 +1,46 @@
+{% extends "maintainer/base_maintainer.html" %}
+
+{% block maintainer_content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Empresas</h2>
+
+    <a href="{{ url_for('maintainer.criar_empresa') }}"
+        class="btn btn-success">
+            Nova Empresa
+    </a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>CNPJ</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for empresa in empresas %}
+        <tr>
+            <td>{{ empresa.name }}</td>
+            <td>{{ empresa.cnpj }}</td>
+            <td>
+                <a href="{{ url_for('maintainer.editar_empresa', id_empresa=empresa.id_empresa) }}"
+                    class="btn btn-sm btn-warning">
+                        Editar
+                </a>
+
+                <form method="POST"
+                    action="{{ url_for('maintainer.deletar_empresa', id_empresa=empresa.id_empresa) }}">
+                        {{ delete_form.hidden_tag()}}
+
+                        <button class="btn btn-sm btn-danger"
+                            onclick="return confirm('Deletar empresa?')">
+                            Deletar
+                        </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

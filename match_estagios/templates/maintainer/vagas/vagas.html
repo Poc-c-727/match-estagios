@@ -1,0 +1,47 @@
+{% extends "maintainer/base_maintainer.html" %}
+
+{% block maintainer_content %}
+
+
+<h2>Vagas</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Empresa</th>
+            <th>Bolsa</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vaga in vagas %}
+            <tr>
+                <td>{{ vaga.titulo }}</td>
+                <td>{{ vaga.empresa.name }}</td>
+                <td>R$ {{ vaga.bolsa | currency }}</td>
+                <td>{{ vaga.status.value }}</td>
+                <td>
+                    <a href="{{ url_for('maintainer.editar_vaga', id=vaga.id_vaga) }}"
+                        class="btn btn-sm btn-warning">
+                            Editar
+                    </a>
+
+                    <form method="POST"
+                        action="{{ url_for('maintainer.deletar_vaga', id=vaga.id_vaga) }}">
+
+                            {{ delete_form.hidden_tag() }}
+
+                            <button class="btn btn-sm btn-danger"
+                                onclick="return confirm('Deletar vaga?')">
+                                Deletar
+                            </button>
+                    </form
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

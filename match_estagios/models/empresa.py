@@ -17,7 +17,7 @@ class Empresa(db.Model):
     )
 
     # Relacionamento (1:1)
-    user = db.relationship("User", back_populates="empresa")
+    user = db.relationship("User", back_populates="empresa", single_parent=True)
 
     def __init__(
         self, name, cnpj, ramo, endereco, site=None, descricao=None, user=None

@@ -1,0 +1,59 @@
+{% extends "maintainer/base_maintainer.html" %}
+
+{% block maintainer_content %}
+
+<h2>{{ titulo }}</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-2">
+        {{ form.name.label }}
+        {{ form.name(class="form-control")}}
+    </div>
+    {% for error in form.name.errors %}
+        <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+
+    <div class="mb-2">
+        {{ form.email.label }}
+        {{ form.email(class="form-control")}}
+    </div>
+    {% for error in form.email.errors %}
+        <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+
+    <div class="mb-2">
+        {{ form.password.label }}
+        {{ form.password(class="form-control")}}
+        {% if is_edit %}
+            <small class="text-muted">
+                Deixe em branco para não alterar a senha
+            </small>
+        {% endif %}
+    </div>
+    {% for error in form.password.errors %}
+        <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+
+    <div class="mb-2">
+        {{ form.role.label }}
+        {{ form.role(class="form-select")}}
+    </div>
+    {% for error in form.role.errors %}
+        <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+
+    <div class="mb-3">
+        {{ form.status.label }}
+        {{ form.status(class="form-select")}}
+    </div>
+    {% for error in form.status.errors %}
+        <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+
+    <button class="btn btn-primary">{{ botao }}</button>
+    <a href="{{ url_for('maintainer.usuarios') }}" class="btn btn-secondary">Voltar</a>
+</form>
+
+{% endblock %}

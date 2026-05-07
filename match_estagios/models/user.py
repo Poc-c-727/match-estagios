@@ -33,9 +33,15 @@ class User(UserMixin, db.Model):
     )
 
     # Relacionamentos
-    estudante = db.relationship("Estudante", back_populates="user", uselist=False)
-    empresa = db.relationship("Empresa", back_populates="user", uselist=False)
-    faculdade = db.relationship("Faculdade", back_populates="user", uselist=False)
+    estudante = db.relationship(
+        "Estudante", back_populates="user", uselist=False, cascade="all, delete-orphan"
+    )
+    empresa = db.relationship(
+        "Empresa", back_populates="user", uselist=False, cascade="all, delete-orphan"
+    )
+    faculdade = db.relationship(
+        "Faculdade", back_populates="user", uselist=False, cascade="all, delete-orphan"
+    )
 
     def __init__(self, name, email, password_hash, role, status):
         self.name = name

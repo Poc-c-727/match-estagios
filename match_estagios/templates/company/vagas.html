@@ -26,12 +26,10 @@
 
           <form method="POST"
              action="{{ url_for('company.deletar_vaga', id_vaga=vaga.id_vaga) }}"
-             style="display: inline;"
-          >
+             style="display: inline;">
               {{ delete_form.hidden_tag() }}
               <button type="submit" class="btn btn-sm btn-danger"
-                  onclick="return confirm('Tem certeza que deseja deletar esta vaga?')"
-              >
+                  onclick="return confirm('Tem certeza que deseja deletar esta vaga?')">
                   Deletar
               </button>
           </form>

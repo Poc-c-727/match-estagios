@@ -37,7 +37,7 @@ def criar_vaga():
             descricao=form.descricao.data,
             bolsa=form.bolsa.data,
             modalidade=VagaModalidade[form.modalidade.data],
-            status=VagaStatus.ABERTA,
+            status=VagaStatus[form.status.data],
             id_empresa=current_user.empresa.id_empresa,
         )
 
@@ -81,6 +81,7 @@ def editar_vaga(id_vaga):
         vaga.descricao = form.descricao.data
         vaga.bolsa = form.bolsa.data
         vaga.modalidade = VagaModalidade[form.modalidade.data]
+        vaga.status = VagaStatus[form.status.data]
 
         db.session.commit()
 

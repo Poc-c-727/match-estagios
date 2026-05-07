@@ -1,0 +1,49 @@
+{% extends "maintainer/base_maintainer.html" %}
+
+{% block maintainer_content %}
+<div class="d-flex justify-content-between mb-3">
+    <h2>Usuários</h2>
+    <a href="{{ url_for('maintainer.criar_usuario') }}"
+        class="btn btn-success">
+        Novo usuários
+    </a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in usuarios %}
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role.value }}</td>
+            <td>{{ user.status.value }}</td>
+            <td>
+                <a href="{{ url_for('maintainer.editar_usuario', id=user.id_user) }}"
+                    class="btn btn-sm btn-warning">
+                    Editar
+                </a>
+
+                <form method="POST"
+                    action="{{ url_for('maintainer.deletar_usuario', id=user.id_user) }}">
+                        {{ delete_form.hidden_tag() }}
+
+                        <button class="btn btn-sm btn-danger"
+                            onclick="return confirm('Deletar usuário?')">
+                            Deletar
+                        </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

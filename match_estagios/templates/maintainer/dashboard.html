@@ -1,0 +1,34 @@
+{% extends "maintainer/base_maintainer.html" %}
+
+{% block maintainer_content %}
+<h2>Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Usuários</h5>
+            <p>{{ total_usuarios or 0}}</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Empresas</h5>
+            <p>{{ total_empresas or 0 }}</p>
+    	</div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Vagas</h5>
+            <p>{{ total_vagas or 0 }}</p>
+    	</div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Candidaturas</h5>
+            <p>{{ total_candidaturas or 0 }}</p>
+    	</div>
+    </div>
+</div>
+{% endblock %}

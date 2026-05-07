@@ -1,0 +1,44 @@
+{% extends "maintainer/base_maintainer.html" %}
+
+
+{% block maintainer_content %}
+<h2>Editar empresa</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-2">
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}
+    </div>
+
+    <div class="mb-2">
+        {{ form.cnpj.label }}
+        {{ form.cnpj(class="form-control") }}
+    </div>
+
+    <div class="mb-2">
+        {{ form.ramo.label }}
+        {{ form.ramo(class="form-control") }}
+    </div>
+
+    <div class="mb-2">
+        {{ form.endereco.label }}
+        {{ form.endereco(class="form-control") }}
+    </div>
+
+    <div class="mb-2">
+        {{ form.site.label }}
+        {{ form.site(class="form-control") }}
+    </div>
+
+    <div class="mb-2">
+        {{ form.descricao.label }}
+        {{ form.descricao(class="form-control") }}
+    </div>
+
+    <button class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('maintainer.empresas') }}" class="btn btn-secondary">Voltar</a>
+</form>
+
+{% endblock %}
