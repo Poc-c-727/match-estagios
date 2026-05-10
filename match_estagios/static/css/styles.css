@@ -16,3 +16,8 @@
 table form {
     display: inline;
 }
+
+aside {
+    width: 280px;
+    min-height: 100vh;
+}

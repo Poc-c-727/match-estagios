@@ -12,13 +12,15 @@ load_dotenv()
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(str(user_id))
 
 
 def format_currency(value):
     if value is None:
         return "0,00"
-    return "{:,.2f}".format(value).replace(",", "X").replace(".", ",").replace("X", ".")
+    return (
+        "R$ {:,.2f}".format(value).replace(",", "X").replace(".", ",").replace("X", ".")
+    )
 
 
 def create_app():

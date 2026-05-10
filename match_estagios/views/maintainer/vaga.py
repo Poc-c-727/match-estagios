@@ -24,7 +24,7 @@ def vagas():
     )
 
 
-@maintainer_bp.route("/vagas/<int:id>/editar", methods=["GET", "POST"])
+@maintainer_bp.route("/vagas/<string:id>/editar", methods=["GET", "POST"])
 @login_required
 @roles_required(UserRole.MAINTAINER)
 def editar_vaga(id):
@@ -55,7 +55,7 @@ def editar_vaga(id):
     )
 
 
-@maintainer_bp.route("/vagas/<int:id>/deletar", methods=["POST"])
+@maintainer_bp.route("/vagas/<string:id>/deletar", methods=["POST"])
 @login_required
 @roles_required(UserRole.MAINTAINER)
 def deletar_vaga(id):

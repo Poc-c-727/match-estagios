@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Vagas{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Vagas</h2>
+
+    {% if vagas %}
+        <div class="list-group">
+
+            {% for vaga in vagas %}
+
+                <a href="{{ url_for('main.detalhes_vaga', id=vaga.id_vaga) }}"
+                    class="list-group-item list-group-item-action">
+
+                        <div class="d-flex justify-content-between">
+                            <h5>{{ vaga.titulo }}</h5>
+
+                            <span>
+                                {{ vaga.modalidade.value.capitalize() }}
+                            </span>
+                        </div>
+
+                        <p class="mb-1">
+                            {{ vaga.empresa.name }}
+                        </p>
+
+                        <small>
+                            Bolsa:
+                            {{ vaga.bolsa | currency }}
+                        </small>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+        <p>Nenhuma vaga aberta no momento.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

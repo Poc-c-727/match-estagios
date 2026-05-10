@@ -60,7 +60,7 @@ def criar_usuario():
     )
 
 
-@maintainer_bp.route("/usuarios/<int:id>/editar", methods=["GET", "POST"])
+@maintainer_bp.route("/usuarios/<string:id>/editar", methods=["GET", "POST"])
 @login_required
 @roles_required(UserRole.MAINTAINER)
 def editar_usuario(id):
@@ -97,7 +97,7 @@ def editar_usuario(id):
     )
 
 
-@maintainer_bp.route("/usuarios/<int:id>/deletar", methods=["POST"])
+@maintainer_bp.route("/usuarios/<string:id>/deletar", methods=["POST"])
 @login_required
 @roles_required(UserRole.MAINTAINER)
 def deletar_usuario(id):

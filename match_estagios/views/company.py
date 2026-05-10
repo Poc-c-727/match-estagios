@@ -1,12 +1,15 @@
-from flask import flash, url_for
+from flask import flash, request, url_for
 from flask.blueprints import Blueprint
 from flask.templating import render_template
 from flask_login import current_user, login_required
+from sqlalchemy.sql.functions import func
 from werkzeug.utils import redirect
 
 from match_estagios.extensions import db
+from match_estagios.forms.basic_form import BasicForm
 from match_estagios.forms.delete import DeleteForm
 from match_estagios.forms.vaga import VagaForm
+from match_estagios.models.candidatura import Candidatura, CandidaturaStatus
 from match_estagios.models.user import UserRole
 from match_estagios.models.vaga import Vaga, VagaModalidade, VagaStatus
 from match_estagios.utils.decorators import roles_required
@@ -64,7 +67,7 @@ def listar_vagas():
     return render_template("company/vagas.html", vagas=vagas, delete_form=delete_form)
 
 
-@company_bp.route("/vaga/<int:id_vaga>/editar", methods=["GET", "POST"])
+@company_bp.route("/vagas/<string:id_vaga>/editar", methods=["GET", "POST"])
 @login_required
 @roles_required(UserRole.EMPRESA)
 def editar_vaga(id_vaga):
@@ -91,7 +94,7 @@ def editar_vaga(id_vaga):
     return render_template("company/editar_vaga.html", form=form, vaga=vaga)
 
 
-@company_bp.route("/vaga/<int:id_vaga>/deletar", methods=["POST"])
+@company_bp.route("/vagas/<string:id_vaga>/deletar", methods=["POST"])
 @login_required
 @roles_required(UserRole.EMPRESA)
 def deletar_vaga(id_vaga):
@@ -106,3 +109,83 @@ def deletar_vaga(id_vaga):
 
     flash("Vaga deletada com sucesso!", "success")
     return redirect(url_for("company.listar_vagas"))
+
+
+@company_bp.route("/candidaturas")
+@login_required
+@roles_required(UserRole.EMPRESA)
+def listar_candidaturas():
+    candidaturas = (
+        db.session.query(
+            Vaga,
+            func.count(Candidatura.id_candidatura).label("total_candidatura"),
+        )
+        .outerjoin(Candidatura)
+        .filter(Vaga.id_empresa == current_user.empresa.id_empresa)
+        .group_by(Vaga.id_vaga)
+        .all()
+    )
+
+    return render_template("company/candidaturas.html", candidaturas=candidaturas)
+
+
+@company_bp.route("candidaturas/<string:id_vaga>")
+@login_required
+@roles_required(UserRole.EMPRESA)
+def detalhes_candidaturas(id_vaga):
+    form = BasicForm()
+
+    vaga = Vaga.query.get_or_404(id_vaga)
+
+    if vaga.id_empresa != current_user.empresa.id_empresa:
+        flash("Você não tem permissão para acessar essa vaga.", "danger")
+        return redirect(url_for("company.listar_candidaturas"))
+
+    candidaturas = Candidatura.query.filter_by(id_vaga=vaga.id_vaga).all()
+
+    return render_template(
+        "company/detalhes_candidaturas.html",
+        form=form,
+        vaga=vaga,
+        candidaturas=candidaturas,
+        candidatura_status=CandidaturaStatus,
+    )
+
+
+@company_bp.route("/candidaturas/<string:id_candidatura>/status", methods=["POST"])
+@login_required
+@roles_required(UserRole.EMPRESA, UserRole.MAINTAINER)
+def atualizar_status_candidatura(id_candidatura):
+    candidatura = Candidatura.query.get_or_404(id_candidatura)
+
+    # Validação para permitir que o mantenedor possa atualizar o status do candidato.
+    if current_user.role == UserRole.EMPRESA:
+        if candidatura.vaga.id_empresa != current_user.empresa.id_empresa:
+            flash("Sem permissão.", "danger")
+            return redirect(url_for("company.listar_candidaturas"))
+
+    novo_status = request.form.get("status")
+
+    if not novo_status:
+        flash("Status inválido.", "danger")
+        return redirect(
+            url_for(
+                "company.detalhes_candidaturas",
+                id_vaga=candidatura.id_vaga,
+            )
+        )
+
+    candidatura.status = CandidaturaStatus[novo_status]
+
+    db.session.commit()
+
+    flash("Status atualizado.", "success")
+
+    if current_user.role == UserRole.MAINTAINER:
+        return redirect(
+            url_for("maintainer.detalhes_candidaturas", id_vaga=candidatura.id_vaga)
+        )
+
+    return redirect(
+        url_for("company.detalhes_candidaturas", id_vaga=candidatura.id_vaga)
+    )

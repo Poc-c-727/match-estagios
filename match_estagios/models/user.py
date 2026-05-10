@@ -4,6 +4,7 @@ from enum import Enum
 from flask_login import UserMixin
 
 from match_estagios.extensions import db
+from match_estagios.utils.id import generate_uuid
 
 
 class UserRole(Enum):
@@ -22,7 +23,7 @@ class UserStatus(Enum):
 class User(UserMixin, db.Model):
     __tablename__ = "users"
 
-    id_user = db.Column(db.BigInteger, primary_key=True)
+    id_user = db.Column(db.String(36), primary_key=True, default=generate_uuid)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)

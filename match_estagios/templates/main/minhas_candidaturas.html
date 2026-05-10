@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Minhas Candidaturas{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
+
+<h2>Minhas Candidaturas</h2>
+
+<table class="table">
+    <thead>
+        <th>Vaga</th>
+        <th>Empresa</th>
+        <th>Status</th>
+        <th>Data</th>
+        <th></th>
+    </thead>
+    <tbody>
+        {% for candidatura in candidaturas %}
+            <tr>
+                <td>
+                    {{ candidatura.vaga.titulo }}
+                </td>
+
+                <td>
+                    {{ candidatura.vaga.empresa.name }}
+                </td>
+
+                <td>
+                    {{ candidatura.status.value.capitalize() }}
+                </td>
+
+                <td>
+                    {{ candidatura.data_candidatura.strftime("%d/%m/%Y") }}
+                </td>
+
+                <td>
+                    {% if candidatura.status.name == "PENDENTE" %}
+                        <form
+                           method="POST"
+                           action="{{ url_for('main.cancelar_candidatura',
+                                id_candidatura=candidatura.id_candidatura)
+                           }}"
+                        >
+                            {{ form.hidden_tag() }}
+                            <button
+                                class="btn btn-sm btn-danger"
+                                onclick="return confirm('Cancelar candidatura')"
+                            >
+                                Cancelar
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

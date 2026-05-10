@@ -1,6 +1,7 @@
 from flask.templating import render_template
 from flask_login import login_required
 
+from match_estagios.models.candidatura import Candidatura
 from match_estagios.models.empresa import Empresa
 from match_estagios.models.user import User, UserRole
 from match_estagios.models.vaga import Vaga
@@ -18,5 +19,5 @@ def dashboard():
         total_usuarios=User.query.count(),
         total_empresas=Empresa.query.count(),
         total_vagas=Vaga.query.count(),
-        total_candidaturas=0,  # implementar
+        total_candidaturas=Candidatura.query.count(),  # implementar
     )

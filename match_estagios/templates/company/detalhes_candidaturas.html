@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+
+{% block title %}Candidatura: {{ vaga.titulo }}{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+
+{% block content %}
+
+<h2>{{ vaga.titulo }}</h2>
+
+<p>
+    <strong>Empresa:</strong>
+    {{ vaga.empresa.name }}
+</p>
+
+<p>
+    <strong>Modalidade:</strong>
+    {{ vaga.modalidade.value.capitalize() }}
+</p>
+
+<p>
+    <strong>Bolsa:</strong>
+    {{ vaga.bolsa | currency }}
+</p>
+
+<hr>
+
+<h5> Descrição</h5>
+
+<p>
+    {{ vaga.descricao }}
+</p>
+
+<hr>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for candidatura in candidaturas %}
+            <tr>
+                <td>{{ candidatura.estudante.name }}</td>
+
+                <td>
+                    {{ candidatura.estudante.user.email }}
+                </td>
+
+                <td>
+                    <form method="POST"
+                        action="{{ url_for('company.atualizar_status_candidatura', id_candidatura= candidatura.id_candidatura) }}"
+                    >
+                        {{ form.hidden_tag() }}
+
+                        <select name="status"
+                            class="form-select form-select-sm
+                                {% if candidatura.status.name == 'PENDENTE' %}
+                                    border-warning
+                                {% elif candidatura.status.name == 'APROVADO' %}
+                                    border-success
+                                {% elif candidatura.status.name == 'RECUSADO' %}
+                                    border-danger
+                                {% endif %}
+
+                            "
+                            onchange="this.form.submit()"
+                        >
+                            {% for status in candidatura_status %}
+
+                            <option value="{{ status.name }}"
+                                {% if candidatura.status == status %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ status.value.capitalize()}}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+                    </form>
+                </td>
+
+
+                <td>
+                    {{ candidatura.data_candidatura.strftime("%d/%m/%Y") }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

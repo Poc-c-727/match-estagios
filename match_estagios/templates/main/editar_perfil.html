@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Perfil{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Editar Perfil</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <!-- Campos comuns -->
+
+    <div class="mb-3">
+        {{ form.name.label(class="form-label") }}
+        {{ form.name(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-control") }}
+    </div>
+
+    {% if current_user.status.value == "verificado" %}
+        <!-- Estudante -->
+
+        {% if current_user.role.value == "estudante" %}
+            <div class="mb-3">
+                {{ form.cpf.label(class="form-label") }}
+                {{ form.cpf(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.data_nascimento.label(class="form-label") }}
+                {{ form.data_nascimento(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.endereco.label(class="form-label") }}
+                {{ form.endereco(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.telefone.label(class="form-label") }}
+                {{ form.telefone(class="form-control") }}
+            </div>
+        {% endif %}
+
+
+        <!-- Empresa -->
+
+        {% if current_user.role.value == "empresa" %}
+            <div class="mb-3">
+                {{ form.cnpj.label(class="form-label") }}
+                {{ form.cnpj(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.ramo.label(class="form-label") }}
+                {{ form.ramo(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.endereco.label(class="form-label") }}
+                {{ form.endereco(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.site.label(class="form-label") }}
+                {{ form.site(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.descricao.label(class="form-label") }}
+                {{ form.descricao(class="form-control") }}
+            </div>
+        {% endif %}
+
+
+        <!-- Faculdade -->
+
+        {% if current_user.role.value == "faculdade" %}
+            <div class="mb-3">
+                {{ form.cnpj.label(class="form-label") }}
+                {{ form.cnpj(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.site.label(class="form-label") }}
+                {{ form.site(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.telefone.label(class="form-label") }}
+                {{ form.telefone(class="form-control") }}
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+    <div class="d-flex gap-2">
+        {{ form.salvar(class="btn btn-success") }}
+
+        <a
+            href="{{ url_for('main.perfil') }}"
+            class="btn btn-secondary"
+        >
+            Cancelar
+        </a>
+    </div>
+
+</form>
+
+{% endblock %}

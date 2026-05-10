@@ -83,7 +83,7 @@ def criar_empresa():
     return render_template("maintainer/empresas/criar_empresa.html", form=form)
 
 
-@maintainer_bp.route("/empresas/<int:id_empresa>/editar", methods=["GET", "POST"])
+@maintainer_bp.route("/empresas/<string:id_empresa>/editar", methods=["GET", "POST"])
 @login_required
 @roles_required(UserRole.MAINTAINER)
 def editar_empresa(id_empresa):
@@ -111,7 +111,7 @@ def editar_empresa(id_empresa):
 # No futuro:
 #   - impedir a remoção se a empresa tem vagas
 #   - soft delete
-@maintainer_bp.route("/empresas/<int:id_empresa>/deletar", methods=["POST"])
+@maintainer_bp.route("/empresas/<string:id_empresa>/deletar", methods=["POST"])
 @login_required
 @roles_required(UserRole.MAINTAINER)
 def deletar_empresa(id_empresa):

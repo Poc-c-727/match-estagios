@@ -1,5 +1,10 @@
 <!-- company/index.html -->
 
+{% extends "base.html" %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
 <h2>Painel da Empresa</h2>
 
 <a href="{{ url_for('company.criar_vaga') }}" class="btn btn-primary">
@@ -8,3 +13,7 @@
 <a href="{{ url_for('company.listar_vagas') }}" class="btn btn-secondary">
   Ver minhas vagas
 </a>
+
+<a href="{{ url_for('company.listar_candidaturas') }}" class="btn btn-secondary">Candidaturas</a>
+
+{% endblock %}

@@ -1,6 +1,8 @@
 {% extends "maintainer/base_maintainer.html" %}
 
-{% block maintainer_content %}
+{% block title %}Usuários{% endblock %}
+
+{% block content %}
 <div class="d-flex justify-content-between mb-3">
     <h2>Usuários</h2>
     <a href="{{ url_for('maintainer.criar_usuario') }}"

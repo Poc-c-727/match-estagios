@@ -13,3 +13,5 @@ csrf_protect = CSRFProtect()
 
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"  # type: ignore
+login_manager.login_message = "Entre no sistema para acessar a página"
+login_manager.login_message_category = "info"
