@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Candidaturas{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
+
+<h2>Candidaturas</h2>
+
+<table class="table">
+    <thead>
+        <th>Vaga</th>
+        <th>Status</th>
+        <th>Total de candidaturas</th>
+        <th></th>
+    </thead>
+    <tbody>
+        {% for vaga, total in candidaturas %}
+            <tr>
+                <td>{{ vaga.titulo }}</td>
+                <td>{{ vaga.status.value }}</td>
+                <td>{{ total }}</td>
+                <td>
+                    <a href="{{ url_for('company.detalhes_candidaturas', id_vaga=vaga.id_vaga) }}"
+                        class="btn btn-primary btn-sm"
+                    >
+                        Ver candidatos
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

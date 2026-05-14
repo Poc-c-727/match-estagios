@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ vaga.titulo}}{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2>{{ vaga.titulo }}</h2>
+
+    <p>
+        <strong>Empresa:</strong>
+        {{ vaga.empresa.name }}
+    </p>
+
+    <p>
+        <strong>Modalidade:</strong>
+        {{ vaga.modalidade.value.capitalize() }}
+    </p>
+
+    <p>
+        <strong>Bolsa:</strong>
+        {{ vaga.bolsa | currency }}
+    </p>
+
+    <hr>
+
+    <h5> Descrição</h5>
+
+    <p>
+        {{ vaga.descricao }}
+    </p>
+
+    <hr>
+
+    <div class="d-flex gap-2">
+        {% if current_user.role.value == "estudante" %}
+
+            {% if candidatura_existente %}
+
+                <button class="btn btn-success" disabled aria-disabled="true">
+                    Já candidatado
+                </button>
+
+            {% else %}
+
+                <form method="POST"
+                    action="{{ url_for('main.candidatar', id=vaga.id_vaga) }}"
+                >
+                    {{ form.hidden_tag() }}
+                    <button class="btn btn-success"
+                        onclick="return confirm('Candidatar-se?')"
+                    >
+                        Candidatar-se
+                    </button>
+                </form>
+
+            {% endif %}
+
+        {% endif %}
+
+        <a href="{{ url_for('main.listar_vagas') }}" class="btn btn-secondary">Voltar</a>
+    </div>
+
+</div>
+
+{% endblock %}
