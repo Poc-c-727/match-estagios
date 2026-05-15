@@ -4,15 +4,20 @@ from flask_login import current_user, login_required
 from match_estagios.models.user import UserRole
 from match_estagios.utils.decorators import roles_required
 
+from flask import render_template #
+
 main_bp = Blueprint("main", __name__, template_folder="templates")
 
 
 @main_bp.route("/")
 def index():
     if current_user.is_authenticated:
-        return f"Logado como {current_user.email}"
-    return "Não logado"
+        return render_template("index_logged.html") 
+    return render_template("index.html") 
 
+@main_bp.route("/sobre")
+def sobre():
+    return render_template("sobre.html")
 
 @main_bp.route("/dashboard")
 @login_required

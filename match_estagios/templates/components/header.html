@@ -1,18 +1,18 @@
-<header class="py-4">
+<header class="py-4 header">
     <div class="container">
         <div class="row align-items-center">
 
             <nav class="col-md-4">
                 <ul class="list-unstyled mb-0 text-uppercase fw-bold">
-                    <li><a href="#" class="text-decoration-none text-dark">O que é?</a></li>
-                    <li><a href="#" class="text-decoration-none text-dark">Como funciona?</a></li>
-                    <li><a href="#" class="text-decoration-none text-dark">Instituições Credenciadas</a></li>
+                    <li><a href="{{ url_for('main.sobre') }}" class="text-decoration-none text-dark">O que é?</a></li>
+                    <li><a href="#comofunciona" class="text-decoration-none text-dark">Como funciona?</a></li>
+                    <li><a href="#instituicoescred" class="text-decoration-none text-dark">Instituições Credenciadas</a></li>
                 </ul>
             </nav>
 
             <div class="col-md-4 text-center">
                 <a href="{{ url_for('main.index') }}">
-                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Match Estágios" >
+                    <img src="{{ url_for('static', filename='images/logo-me.png') }}" alt="Match Estágios" >
                 </a>
             </div>
 

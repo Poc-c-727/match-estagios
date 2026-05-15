@@ -1,5 +1,135 @@
+:root {
+    --rosa-claro: #f3e6f2; 
+    --rosa-medio: #8f1448; 
+    --rosa-escuro: #4a0e2a; 
+    --cinza-escuro: #2b2b2b; 
+    --branco: #ffffff;
+}
+
 .form-signin {
     max-width: 330px;
     padding: 1rem;
     margin: 7rem auto;
+}
+
+/*Cabeçalho*/
+.header{
+    background-color: var(--rosa-claro);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; 
+}
+
+.flex-shrink-0{
+    margin-top: 161px;
+}
+
+
+/*Padrões de cores de sessao*/
+.sessao-rosaclaro{
+    background-color: var(--rosa-claro);
+}
+
+.sessao-rosamedio{
+    background-color: var(--rosa-medio);
+}
+
+.sessao-rosaescuro{
+    background-color: var(--rosa-escuro);
+}
+
+.sessao-rosaescuro p, .sessao-rosaescuro .text-primary{
+    color: var(--branco) !important;
+}
+
+.sessao-rosaescuro .btn,.sessao-rosaescuro .btn:hover{
+    border-color: var(--branco);
+    color: var(--branco);
+}
+
+
+.sessao-cinzascuro{
+    background-color: var(--cinza-escuro)
+}
+
+/*HOME*/
+
+/*Sessão 1*/
+
+.img-pinguin{
+    display: block;
+}
+/*Seção de Instituições Credenciadas. */
+
+.section-accredited {
+background-color: var(--rosa-escuro); /* Fundo vinho escuro do mockup */
+padding: 80px 0;
+}
+
+.section-title {
+color: #ffffff;
+font-weight: 700;
+letter-spacing: 2px;
+margin-bottom: 50px;
+text-transform: uppercase;
+}
+
+.fatec-card {
+background-color: var(--rosa-claro); 
+border-radius: 20px;
+padding: 30px 15px;
+text-align: center;
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+transition: transform 0.3s ease;
+min-height: 180px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+
+.fatec-card:hover {
+transform: translateY(-8px);
+}
+
+.fatec-card h2 {
+color: var(--cinza-escuro);
+font-weight: 800;
+font-size: 2.8rem;
+margin-bottom: 0;
+}
+
+.fatec-card .location {
+color: var(--rosa-medio); /* Destaque para a unidade */
+font-weight: 700;
+font-size: 1.2rem;
+display: block;
+}
+
+.fatec-card .sub-name {
+color: var(--cinza-escuro);
+font-size: 0.85rem;
+font-weight: 500;
+opacity: 0.8;
+}
+
+/* STREAMING_CHUNK: Estilizando a seção de chamada (CTA) inferior... */
+.section-cta {
+background-color: #ffffff;
+padding: 60px 0;
+}
+
+.btn-cta {
+background-color: var(--rosa-medio);
+color: white;
+border-radius: 50px;
+padding: 12px 40px;
+font-weight: 600;
+transition: background-color 0.3s;
+}
+
+.btn-cta:hover {
+background-color: var(--rosa-escuro);
+color: white;
 }
