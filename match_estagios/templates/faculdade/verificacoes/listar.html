@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitações{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Solicitações de Verificação</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>RA</th>
+            <th>Curso</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for solicitacao in solicitacoes %}
+
+            <tr>
+                <td>{{ solicitacao.user.name }}</td>
+                <td>{{ solicitacao.user.email }}</td>
+                <td>{{ solicitacao.ra }}</td>
+                <td>{{ solicitacao.curso }}</td>
+
+                <td>
+                    <a
+                        href="{{ url_for('faculdade.detalhes_verificacao', id_solicitacao=solicitacao.id_solicitacao) }}"
+                        class="btn btn-sm btn-primary"
+                    >
+                        Ver detalhes
+                    </a>
+                </td>
+            </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

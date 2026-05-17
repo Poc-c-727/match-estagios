@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Solicitação de Veficação</h2>
+
+<ul class="list-group mb-4">
+    <li class="list-group-item">
+        <strong>Nome:</strong>
+        {{ solicitacao.user.name }}
+    </li>
+
+    <li class="list-group-item">
+        <strong>Email:</strong>
+        {{ solicitacao.user.email }}
+    </li>
+
+    <li class="list-group-item">
+        <strong>RA:</strong>
+        {{ solicitacao.ra }}
+    </li>
+
+    <li class="list-group-item">
+        <strong>Curso:</strong>
+        {{ solicitacao.curso }}
+    </li>
+
+    <li class="list-group-item">
+        <strong>CPF:</strong>
+        {{ solicitacao.cpf }}
+    </li>
+
+    <li class="list-group-item">
+        <strong>Endereço:</strong>
+        {{ solicitacao.endereco }}
+    </li>
+</ul>
+
+<div class="d-flex gap-2">
+    <form
+       method="POST"
+       action="{{ url_for('faculdade.aprovar_verificacao', id_solicitacao=solicitacao.id_solicitacao) }}"
+    >
+        {{ form.hidden_tag() }}
+        <button
+            class="btn btn-success"
+            onclick="return confirm('Aprovar?')"
+        >
+            Aprovar
+        </button>
+    </form>
+
+    <form
+       method="POST"
+       action="{{ url_for('faculdade.rejeitar_verificacao', id_solicitacao=solicitacao.id_solicitacao) }}"
+    >
+        {{ form.hidden_tag() }}
+        <button
+            class="btn btn-danger"
+            onclick="return confirm('Rejeitar?')"
+        >
+            Rejeitar
+        </button>
+    </form>
+</div>
+{% endblock %}
