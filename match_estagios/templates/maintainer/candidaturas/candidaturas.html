@@ -1,0 +1,39 @@
+{% extends "maintainer/base_maintainer.html" %}
+
+{% block title %}Candidaturas{% endblock %}
+
+{% block content %}
+
+<h2>Candidaturas</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Vaga</th>
+            <th>Empresa</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vaga in vagas %}
+            <tr>
+               <td>{{ vaga.titulo }}</td>
+               <td>{{ vaga.empresa.name }}</td>
+               <td>{{ vaga.status.value }}</td>
+               <td>{{ vaga.candidaturas | length }}</td>
+               <td>
+                   <a
+                       href="{{ url_for('maintainer.detalhes_candidaturas', id_vaga=vaga.id_vaga) }}"
+                       class="btn btn-sm btn-primary"
+                   >
+                       Ver
+                   </a>
+               </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Meu Perfil{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
+
+<div class="mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Meu Perfil</h2>
+
+        <a href="{{ url_for('main.editar_perfil') }}"
+            class="btn btn-primary">
+            Editar Perfil
+        </a>
+    </div>
+
+    <!-- Informações comuns -->
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Informações da Conta
+        </div>
+
+        <div class="card-body">
+            <p>
+                <strong>Nome:</strong>
+                {{ current_user.name }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ current_user.email }}
+            </p>
+
+            {% if current_user.role.value == 'estudante' %}
+            <p>
+                <strong>Status da conta:</strong>
+                {{ current_user.status.value.capitalize() }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if current_user.status.value == "verificado" %}
+
+        <!-- Estudante -->
+
+        {% if current_user.role.value == 'estudante' %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    Informações do Estudante
+                </div>
+
+                <div class="card-body">
+                    <p>
+                        <strong>CPF:</strong>
+                        {{ current_user.estudante.cpf }}
+                    </p>
+
+                    <p>
+                        <strong>Data de nascimento:</strong>
+                        {{ current_user.estudante.data_nascimento.strftime("%d/%m/%Y") }}
+                    </p>
+
+                    <p>
+                        <strong>Endereço:</strong>
+                        {{ current_user.estudante.endereco }}
+                    </p>
+
+                    <p>
+                        <strong>Telefone:</strong>
+                        {{ current_user.estudante.telefone or "Não informado" }}
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- Empresa -->
+
+        {% if current_user.role.value == "empresa" %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    Informações da Empresa
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>CNPJ:</strong>
+                        {{ current_user.empresa.cnpj }}
+                    </p>
+
+                    <p>
+                        <strong>Ramo:</strong>
+                        {{ current_user.empresa.ramo }}
+                    </p>
+
+                    <p>
+                        <strong>Endereço:</strong>
+                        {{ current_user.empresa.endereco }}
+                    </p>
+
+                    <p>
+                        <strong>Site:</strong>
+                        {% if current_user.empresa.site %}
+                            <a href="{{ current_user.empresa.site }}" target="_blank">
+                                {{ current_user.empresa.site }}
+                            </a>
+                        {% else %}
+                            Não Informado
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Descrição:</strong>
+                        {{ current_user.empresa.descricao or "Não informado" }}
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- Faculdade -->
+
+        {% if current_user.role.value == "faculdade" %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    Informações da Faculdade
+                </div>
+
+                <div class="card-body">
+                    <p>
+                        <strong>CNPJ:</strong>
+                        {{ current_user.faculdade.cnpj }}
+                    </p>
+
+                    <p>
+                        <strong>Site:</strong>
+
+                        {% if current_user.faculdade.site %}
+                            <a href="{{ current_user.faculdade.site }}" target="_blank">
+                                {{ current_user.faculdade.site }}
+                            </a>
+                        {% else %}
+                            Não informado
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Telefone:</strong>
+                        {{ current_user.faculdade.telefone or "Não informado"}}
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endif %}
+</div>
+
+{% endblock %}
