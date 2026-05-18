@@ -2,7 +2,7 @@ services:
   db:
     image: mariadb:latest
     container_name: match_estagios_db
-    restart: always
+    restart:  no
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: match_estagios

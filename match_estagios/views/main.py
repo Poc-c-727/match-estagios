@@ -18,17 +18,20 @@ from match_estagios.services.perfil_service import (
 )
 from match_estagios.utils.decorators import roles_required
 
+from flask import render_template #
+
 main_bp = Blueprint("main", __name__, template_folder="templates")
 
 
 @main_bp.route("/")
 def index():
     if current_user.is_authenticated:
-        mensagem = f"Logado como {current_user.email}"
-    else:
-        mensagem = "Não logado"
-    return render_template("base.html", mensagem=mensagem)
+        return render_template("index_logged.html") 
+    return render_template("index.html") 
 
+@main_bp.route("/sobre")
+def sobre():
+    return render_template("sobre.html")
 
 @main_bp.route("/dashboard")
 @login_required
