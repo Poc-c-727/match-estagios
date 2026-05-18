@@ -18,20 +18,23 @@ from match_estagios.services.perfil_service import (
 )
 from match_estagios.utils.decorators import roles_required
 
-from flask import render_template #
-
 main_bp = Blueprint("main", __name__, template_folder="templates")
 
 
 @main_bp.route("/")
 def index():
-    if current_user.is_authenticated:
-        return render_template("index_logged.html") 
-    return render_template("index.html") 
+    # if current_user.is_authenticated:
+    #     return render_template("index_logged.html")
+    # Talve não seja necessário um "index_logged", um "redirecionador" para uma
+    # tela adequada para cada usuário. Criei um arquivo `templates/index_logged.html`
+    # para evitar que o código quebre se o código for descomentado.
+    return render_template("index.html")
+
 
 @main_bp.route("/sobre")
 def sobre():
     return render_template("sobre.html")
+
 
 @main_bp.route("/dashboard")
 @login_required
@@ -57,13 +60,10 @@ def editar_perfil():
     print("pegou formulário")
     if request.method == "GET":
         populate_form(form, current_user)
-        print("formulário populado")
 
     if form.validate_on_submit():
-        print("formulário enviado")
         save_form(form, current_user)
 
-        print("formulário salvo")
         flash("Perfil atualizado", "success")
         return redirect(url_for("main.perfil"))
 

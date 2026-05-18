@@ -36,3 +36,11 @@ class Vaga(db.Model):
     candidaturas = db.relationship(
         "Candidatura", back_populates="vaga", cascade="all, delete-orphan"
     )
+
+    def __init__(self, titulo, descricao, bolsa, modalidade, status, id_empresa):
+        self.titulo = titulo
+        self.descricao = descricao
+        self.bolsa = bolsa
+        self.modalidade = modalidade
+        self.status = status
+        self.id_empresa = id_empresa
