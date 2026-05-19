@@ -5,9 +5,12 @@ from flask_login import current_user, login_required
 
 from match_estagios.extensions import db
 from match_estagios.forms.basic_form import BasicForm
+from match_estagios.forms.verificacao import SolicitacaoVerificacaoForm
 from match_estagios.models.candidatura import Candidatura, CandidaturaStatus
+from match_estagios.models.faculdade import Faculdade
 from match_estagios.models.user import UserRole, UserStatus
 from match_estagios.models.vaga import Vaga, VagaStatus
+from match_estagios.models.verificacao import SolicitacaoStatus, SolicitacaoVerificacao
 from match_estagios.services.perfil_service import (
     choose_user_form,
     populate_form,
@@ -15,20 +18,23 @@ from match_estagios.services.perfil_service import (
 )
 from match_estagios.utils.decorators import roles_required
 
-from flask import render_template #
-
 main_bp = Blueprint("main", __name__, template_folder="templates")
 
 
 @main_bp.route("/")
 def index():
-    if current_user.is_authenticated:
-        return render_template("index_logged.html") 
-    return render_template("index.html") 
+    # if current_user.is_authenticated:
+    #     return render_template("index_logged.html")
+    # Talve não seja necessário um "index_logged", um "redirecionador" para uma
+    # tela adequada para cada usuário. Criei um arquivo `templates/index_logged.html`
+    # para evitar que o código quebre se o código for descomentado.
+    return render_template("index.html")
+
 
 @main_bp.route("/sobre")
 def sobre():
     return render_template("sobre.html")
+
 
 @main_bp.route("/dashboard")
 @login_required
@@ -54,13 +60,10 @@ def editar_perfil():
     print("pegou formulário")
     if request.method == "GET":
         populate_form(form, current_user)
-        print("formulário populado")
 
     if form.validate_on_submit():
-        print("formulário enviado")
         save_form(form, current_user)
 
-        print("formulário salvo")
         flash("Perfil atualizado", "success")
         return redirect(url_for("main.perfil"))
 
@@ -68,6 +71,55 @@ def editar_perfil():
         print(form.errors)
 
     return render_template("main/editar_perfil.html", form=form)
+
+
+@main_bp.route("/perfil/verificacao", methods=["GET", "POST"])
+@login_required
+@roles_required(UserRole.ESTUDANTE)
+def solicitar_verificacao():
+
+    if current_user.status != UserStatus.PENDENTE:
+        flash("Sua conta já foi verificada.", "warning")
+        return redirect(url_for("main.perfil"))
+
+    form = SolicitacaoVerificacaoForm()
+
+    faculdades = Faculdade.query.all()
+
+    form.id_faculdade.choices = [
+        (faculdade.id_faculdade, faculdade.name) for faculdade in faculdades
+    ]
+
+    if form.validate_on_submit():
+        solicitacao_existente = SolicitacaoVerificacao.query.filter_by(
+            id_user=current_user.id_user, status=SolicitacaoStatus.PENDENTE
+        ).first()
+
+        if solicitacao_existente:
+            flash("Você já possui uma solicitação pendente.", "warning")
+            return redirect(url_for("main.perfil"))
+
+        print("solicitação enviada")
+        solicitacao = SolicitacaoVerificacao(
+            ra=form.ra.data,
+            cpf=form.cpf.data,
+            curso=form.curso.data,
+            data_nascimento=form.data_nascimento.data,
+            endereco=form.endereco.data,
+            telefone=form.telefone.data,
+            id_faculdade=form.id_faculdade.data,
+            id_user=current_user.id_user,
+        )
+        print("instância da solicitação criada")
+
+        db.session.add(solicitacao)
+        db.session.commit()
+        print("solicitação adicionada")
+
+        flash("Solicitação enviada com sucesso.", "success")
+        return redirect(url_for("main.perfil"))
+
+    return render_template("main/solicitar_verificacao.html", form=form)
 
 
 @main_bp.route("/vagas")
