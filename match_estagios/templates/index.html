@@ -9,7 +9,7 @@
                 <img class="img-pinguin" src="{{ url_for('static', filename='images/pinguin.png') }}" alt="Match Estágios" >
             </div>
             <div class="col-lg-6 col-md-12 mb-4 d-flex flex-column justify-content-center">
-                <h1 class="fw-light text-primary">Conectando talentos e oportunidades</h1>
+                <h1 class="fw-light fw-bolder text-primary">Conectando talentos e oportunidades</h1>
                 <p class="lead">
                     O Match Estágios foi desenvolvido pensando em uma lacuna: concentrar e conectar estudantes a vagas de estágios, em todos os cursos                </p>
                 <div class="mt-4">
@@ -19,32 +19,39 @@
     </div>
 </section>
 
-<section class="bg-light py-5">
+<section class="sessao-rosamedio py-5">
     <div id="comofunciona"class="container">
         <div>
-           <h2>COMO FUNCIONA?</h2>
-           <h3>Uma motivação para as três partes envolvidas, em uma lógica de ganha-ganha: </h3>
+           <h2 class="text-white my-4 fw-bolder">COMO FUNCIONA?</h2>
+           <h3 class="text-white my-4">Uma motivação para as três partes envolvidas, em uma lógica de ganha-ganha: </h3>
         </div>
-        <div class="row text-center">
-            <div class="col-md-4">
+        <div class="row g-4"> <div class="col-12 col-md-4">
+            <div class="fatec-card">
                 <h3>Para os alunos</h3>
                 <p>Uma ferramenta na busca de oportunidade de estágio</p>
             </div>
-            <div class="col-md-4">
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="fatec-card">
                 <h3>Para empresas</h3>
                 <p>Uma ferramenta para ser referência no mercado de trabalho</p>
             </div>
-            <div class="col-md-4">
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="fatec-card">
                 <h3>Para a faculdade</h3>
                 <p>Uma ferramenta para ser referência no mercado de trabalho</p>
             </div>
         </div>
+
     </div>
 </section>
 <!-- Seção de Instituições Credenciadas -->
 <section class="section-accredited">
     <div id="instituicoescred" class="container text-center">
-        <h2 class="section-title">INSTITUIÇÕES CREDENCIADAS</h2>
+        <h2 class="my-4 text-white fw-bolder text-uppercase">INSTITUIÇÕES CREDENCIADAS</h2>
         
         <div class="row g-4 justify-content-center">
             <!-- Card 1 -->
@@ -80,10 +87,10 @@
 </section>
 
 <!-- Seção de Chamada para Inscrição -->
-<section class="py-5 text-center" style="background-color: #f8f9fa;">
+<section class="footer py-5 text-center">
     <div class="container py-5">
-        <h2 class="fw-bold mb-4" style="color: #4a4a4a; letter-spacing: 1px;">GOSTOU? INSCREVA-SE</h2>
-        <a href="{{ url_for('auth.register') }}" class="btn btn-lg px-5 text-white">Começar Agora</a>
+        <h2 class="fw-bold mb-4">GOSTOU? INSCREVA-SE</h2>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary px-5 text-white">Começar agora</a>
     </div>
 </section>
 {% endblock %}

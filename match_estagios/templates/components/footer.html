@@ -4,7 +4,7 @@
             
             <div class="col-md-6">
                 <div class="footer-logo mb-3">
-                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Match Estágios" >
+                    <img src="{{ url_for('static', filename='images/logo-me.png') }}" alt="Match Estágios" >
                 </div>
                 <div class="footer-contact d-flex align-items-center gap-2 fw-bold">
                     <i class="bi bi-envelope"></i> <span>contato@matchestagios.com.br</span>
@@ -13,9 +13,9 @@
 
             <nav class="col-md-6 text-end">
                 <ul class="list-unstyled mb-0 text-uppercase fw-bold">
-                    <li><a href="#" class="text-decoration-none text-dark hover-opacity">O QUE É?</a></li>
-                    <li><a href="#" class="text-decoration-none text-dark hover-opacity">COMO FUNCIONA?</a></li>
-                    <li><a href="#" class="text-decoration-none text-dark hover-opacity">INSTITUIÇÕES CREDENCIADAS</a></li>
+                    <li><a href="{{ url_for('main.sobre') }}" class="text-decoration-none text-dark hover-opacity">O QUE É?</a></li>
+                    <li><a href="{{ url_for('main.index') }}#comofunciona"class="text-decoration-none text-dark hover-opacity">COMO FUNCIONA?</a></li>
+                    <li><a href="{{ url_for('main.index') }}#instituicoescred" class="text-decoration-none text-dark hover-opacity">INSTITUIÇÕES CREDENCIADAS</a></li>
                 </ul>
             </nav>
 

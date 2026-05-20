@@ -6,6 +6,11 @@
     --branco: #ffffff;
 }
 
+/* Aplica o espaçamento para qualquer elemento que seja alvo de uma âncora */
+:target {
+    scroll-margin-top: 200px; 
+}
+
 .form-signin {
     max-width: 330px;
     padding: 1rem;
@@ -26,6 +31,10 @@
     margin-top: 161px;
 }
 
+/*Padrões de botões*/
+.btn-primary{
+    background-color: var(--rosa-escuro) !important;
+}
 
 /*Padrões de cores de sessao*/
 .sessao-rosaclaro{
@@ -67,14 +76,6 @@
 .section-accredited {
 background-color: var(--rosa-escuro); /* Fundo vinho escuro do mockup */
 padding: 80px 0;
-}
-
-.section-title {
-color: #ffffff;
-font-weight: 700;
-letter-spacing: 2px;
-margin-bottom: 50px;
-text-transform: uppercase;
 }
 
 .fatec-card {
@@ -150,4 +151,8 @@ table form {
 aside {
     width: 280px;
     min-height: 100vh;
+}
+/*Rodapé*/
+footer{
+    background-color: var(--rosa-claro);
 }
