@@ -1,7 +1,15 @@
 from datetime import datetime, timezone
+from enum import Enum
 
 from match_estagios.extensions import db
 from match_estagios.utils.id import generate_short_uuid
+
+
+class NotificacaoTipo(Enum):
+    SUCCESS = "success"
+    WARNING = "warning"
+    DANGER = "danger"
+    INFO = "info"
 
 
 class Notificacao(db.Model):
@@ -16,6 +24,12 @@ class Notificacao(db.Model):
     titulo = db.Column(db.String(255), nullable=False)
 
     mensagem = db.Column(db.Text, nullable=False)
+
+    tipo = db.Column(
+        db.Enum(NotificacaoTipo),
+        nullable=False,
+        default=NotificacaoTipo.INFO,
+    )
 
     lida = db.Column(db.Boolean, default=False, nullable=False)
 
@@ -32,3 +46,9 @@ class Notificacao(db.Model):
     )
 
     user = db.relationship("User", backref="notificacoes")
+
+    def __init__(self, titulo, mensagem, id_user, tipo=None):
+        self.titulo = titulo
+        self.mensagem = mensagem
+        self.id_user = id_user
+        self.tipo = tipo
