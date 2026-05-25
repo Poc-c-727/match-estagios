@@ -14,8 +14,8 @@
 <body class="{% block body_class %}{% endblock %}">
 
     {% include 'components/header.html' %}
-    {% include "components/flash_messages.html"%}
     <main class="flex-shrink-0 {% block main_class %}{% endblock %}">
+        {% include "components/flash_messages.html"%}
         {{ mensagem }}
         {% block content %}{% endblock %}
     </main>
