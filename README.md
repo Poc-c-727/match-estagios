@@ -34,12 +34,16 @@ docker-compose up --build
 ### 3. Subir a aplicação Flask (Local)
 Em um novo terminal na pasta raiz do projeto, use o Poetry para instalar as dependências e iniciar o servidor do Flask:
 ```bash
-# Instalar as dependências do projeto
+# 1. Instalar as dependências do projeto
 poetry install
 
-# Ativar o ambiente e rodar o Flask
+# 2. Executar as migrations para criar/atualizar as tabelas do banco
+poetry run flask db upgrade
+
+# 3. Iniciar o servidor do Flask
 poetry run flask run
 ```
+
 *(Caso prefira usar o shell do Poetry para ativar o ambiente virtual diretamente, você também pode rodar `poetry shell` seguido de `flask run`)*
 
 A aplicação estará disponível em: `http://localhost:5000` (ou na porta configurada no seu ambiente).
