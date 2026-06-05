@@ -13,8 +13,6 @@
 
 .form-signin {
     max-width: 330px;
-    padding: 1rem;
-    margin: 7rem auto;
 }
 
 /*Cabeçalho*/
@@ -155,4 +153,5 @@ aside {
 /*Rodapé*/
 footer{
     background-color: var(--rosa-claro);
+    width: 100%;
 }
