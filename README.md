@@ -10,7 +10,7 @@ Antes de começar, certifique-se de ter instalado em sua máquina:
 * [Poetry](https://python-poetry.org/)
 
 
-## 🛠️ Como subir o ambiente
+## Como subir o ambiente
 
 Siga os passos abaixo para clonar e executar o projeto localmente.
 
