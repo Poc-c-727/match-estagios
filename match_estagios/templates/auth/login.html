@@ -3,29 +3,33 @@
 {% block title %}Login{% endblock %}
 
 {% block body_class %}
-align-items-center py-4 bg-body-tertiary vh-100
+align-items-center bg-body-tertiary vh-100
 {% endblock %}
 
 
-{% block main_class %}form-signin w-100{% endblock %}
+{% block main_class %}form-signin w-100 {% endblock %}
 
 {% block content %}
-<h2>Login</h2>
-<form method="POST">
-  {{ form.hidden_tag() }}
-  <div class="form-floating mb-2">
-    {{ form.email(class="form-control", id="email", placeholder="name@example.com")}}
-    {{ form.email.label(for="email") }}
-  </div>
+<div class="d-flex flex-column justify-content-center py-5" style="min-height: 60vh;">
+    <div class="container text-center">
+      <h2>Login</h2>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-floating mb-2">
+          {{ form.email(class="form-control", id="email", placeholder="name@example.com")}}
+          {{ form.email.label(for="email") }}
+        </div>
 
-  <div class="form-floating mb-3">
-    {{ form.password(class="form-control", id="password", placeholder="Password") }}
-    {{ form.password.label(for="password") }}
-  </div>
+        <div class="form-floating mb-3">
+          {{ form.password(class="form-control", id="password", placeholder="Password") }}
+          {{ form.password.label(for="password") }}
+        </div>
 
-  <div>
-    {{ form.submit(class="btn btn-primary w-100 py-2", value="Sign in") }}
-  </div>
-</form>
+        <div>
+          {{ form.submit(class="btn btn-primary w-100 py-2", value="Sign in") }}
+        </div>
+      </form>
+    </div>
+</div>
 
 {% endblock %}
