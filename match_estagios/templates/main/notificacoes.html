@@ -1,0 +1,63 @@
+{% extends "base.html" %} {% block title %}Notificações{% endblock %} {% block
+main_class %}container{% endblock %} {% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Notificações</h2>
+
+    {% if notificacoes %}
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+
+        <button class="btn btn-sm btn-outline-secondary">
+            Marcar todas como lidas
+        </button>
+    </form>
+    {% endif %}
+</div>
+
+{% if notificacoes %}
+
+<div class="d-flex flex-column gap-3">
+    {% for notificacao in notificacoes %}
+    <div
+        class="card shadow-sm border-0
+        {% if not notificacao.lida %}
+            border-start border-4
+        {% endif %}
+
+        {% if notificacao.tipo.value == 'success' %}
+            border-success
+        {% elif notificacao.tipo.value == 'danger' %}
+            border-danger
+        {% elif notificacao.tipo.value == 'warning' %}
+            border-warning
+        {% else %}
+            border-info
+        {% endif %}
+        "
+    >
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h5 class="card-title mb-1">{{ notificacao.titulo }}</h5>
+
+                    <p class="card-text mb-2">{{ notificacao.mensagem }}</p>
+
+                    <small class="text-muted">
+                        {{ notificacao.data_criacao.strftime("%d/%m/%Y às
+                        %H:%M") }}
+                    </small>
+                </div>
+
+                {% if not notificacao.lida %}
+                <span class="badge bg-primary"> Nova </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="alert alert-info">Você não possui notificações.</div>
+{% endif %} {% endblock %}

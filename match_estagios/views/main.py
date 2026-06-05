@@ -8,6 +8,7 @@ from match_estagios.forms.basic_form import BasicForm
 from match_estagios.forms.verificacao import SolicitacaoVerificacaoForm
 from match_estagios.models.candidatura import Candidatura, CandidaturaStatus
 from match_estagios.models.faculdade import Faculdade
+from match_estagios.models.notificacao import Notificacao
 from match_estagios.models.user import UserRole, UserStatus
 from match_estagios.models.vaga import Vaga, VagaStatus
 from match_estagios.models.verificacao import SolicitacaoStatus, SolicitacaoVerificacao
@@ -222,3 +223,20 @@ def cancelar_candidatura(id_candidatura):
     flash("Candidatura cancelada.", "success")
 
     return redirect(url_for("main.minhas_candidaturas"))
+
+
+@main_bp.route("/notificacoes")
+@login_required
+def notificacoes():
+    form = BasicForm()
+    notificacoes = (
+        Notificacao.query.filter_by(id_user=current_user.id_user)
+        .order_by(Notificacao.data_criacao.desc())
+        .all()
+    )
+
+    return render_template(
+        "main/notificacoes.html",
+        form=form,
+        notificacoes=notificacoes,
+    )
