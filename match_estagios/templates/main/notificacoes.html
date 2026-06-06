@@ -1,11 +1,18 @@
-{% extends "base.html" %} {% block title %}Notificações{% endblock %} {% block
-main_class %}container{% endblock %} {% block content %}
+{% extends "base.html" %}
+
+{% from "components/notificacao_card.html" import render_notificacao %}
+
+{% block title %}Notificações{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Notificações</h2>
 
-    {% if notificacoes %}
-    <form method="POST" action="">
+    {% if notificacoes_nao_lidas %}
+    <form method="POST" action="{{ url_for('main.marcar_notificacoes_lida') }}">
         {{ form.hidden_tag() }}
 
         <button class="btn btn-sm btn-outline-secondary">
@@ -15,49 +22,65 @@ main_class %}container{% endblock %} {% block content %}
     {% endif %}
 </div>
 
-{% if notificacoes %}
+{% if notificacoes_nao_lidas %}
 
-<div class="d-flex flex-column gap-3">
-    {% for notificacao in notificacoes %}
-    <div
-        class="card shadow-sm border-0
-        {% if not notificacao.lida %}
-            border-start border-4
-        {% endif %}
+<h4 class="mb-3">
+    Não lidas
+    <span class="badge bg-primary">
+        {{ notificacoes_nao_lidas|length }}
+    </span>
+</h4>
 
-        {% if notificacao.tipo.value == 'success' %}
-            border-success
-        {% elif notificacao.tipo.value == 'danger' %}
-            border-danger
-        {% elif notificacao.tipo.value == 'warning' %}
-            border-warning
-        {% else %}
-            border-info
-        {% endif %}
-        "
-    >
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h5 class="card-title mb-1">{{ notificacao.titulo }}</h5>
-
-                    <p class="card-text mb-2">{{ notificacao.mensagem }}</p>
-
-                    <small class="text-muted">
-                        {{ notificacao.data_criacao.strftime("%d/%m/%Y às
-                        %H:%M") }}
-                    </small>
-                </div>
-
-                {% if not notificacao.lida %}
-                <span class="badge bg-primary"> Nova </span>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+<div class="d-flex flex-column gap-3 mb-5">
+    {% for notificacao in notificacoes_nao_lidas %}
+        {{ render_notificacao(notificacao, form) }}
     {% endfor %}
 </div>
 
-{% else %}
+{% endif %}
+
+{% if notificacoes_lidas %}
+
+<div class="accordion" id="accordionNotificacoes">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseLidas"
+            >
+                Notificações lidas
+                <span class="badge bg-secondary">
+                    {{ notificacoes_lidas|length }}
+                </span>
+            </button>
+        </h2>
+
+        <div
+            id="collapseLidas"
+            class="accordion-collapse collapse
+            {% if not notificacoes_nao_lidas %}
+                show
+            {% endif %}
+            "
+        >
+            <div class="accordion-body">
+                <div class="d-flex flex-column gap-3">
+                    {% for notificacao in notificacoes_lidas %}
+                        {{ render_notificacao(notificacao, form) }}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% if not notificacoes_nao_lidas and not notificacoes_lidas %}
 <div class="alert alert-info">Você não possui notificações.</div>
-{% endif %} {% endblock %}
+{% endif %}
+
+{% endblock %}
