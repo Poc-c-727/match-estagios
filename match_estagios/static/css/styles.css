@@ -155,3 +155,50 @@ footer{
     background-color: var(--rosa-claro);
     width: 100%;
 }
+
+/*Painel*/
+
+.text-match {
+    color: #851c44 !important;
+}
+
+.border-match {
+    border-color: #851c44 !important;
+}
+    
+/* Customização fina do menu ativo */
+.sidebar-item.active {
+    color: #851c44 !important;
+    border-bottom: 3px solid #851c44 !important;
+}
+
+/* Raio de curvatura idêntico ao da imagem */
+.rounded-match {
+    border-radius: 45px;
+}
+
+/* Match*/
+
+.text-match {
+    color: #851c44 !important; 
+}
+
+.btn-match {
+    background-color:var(--rosa-escuro) !important;
+    color: var(--branco) !important;
+    border-color:var(--rosa-escuro) !important;
+}
+.btn-match:hover {
+    background-color: #6a1636 !important;
+    color: var(--branco) !important;
+}
+
+.btn-outline-match {
+    color:var(--rosa-escuro) !important;
+    border-color:var(--rosa-escuro) !important;
+    background-color: transparent !important;
+}
+.btn-outline-match:hover {
+    background-color:var(--rosa-escuro) !important;
+    color: var(--branco) !important;
+}

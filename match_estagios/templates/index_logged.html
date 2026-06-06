@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Bem-vindo | Match Estágios{% endblock %}
+
+{% block content %}
+<div class="container my-5 py-md-4">
+    <div class="row align-items-center gy-4">
+        
+        <nav class="col-md-3 d-flex flex-column gap-3">
+            <a href="#" class="nav-link fw-bold p-0 pb-2 sidebar-item active fs-5">Painel</a>
+            <a href="{{ url_for('main.listar_vagas') }}" class="nav-link fw-bold p-0 text-secondary fs-5">Vagas</a>
+            <a href="#" class="nav-link fw-bold p-0 text-secondary fs-5">Matches</a>
+            <a href="{{ url_for('main.minhas_candidaturas') }}" class="nav-link fw-bold p-0 text-secondary fs-5">Minhas candidaturas</a>
+            <a href="{{ url_for('main.perfil') }}" class="nav-link fw-bold p-0 text-secondary fs-5">Detalhes da conta</a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-link fw-bold p-0 text-secondary fs-5">Sair</a>
+        </nav>
+
+        <main class="col-md-9">
+            <div class="p-5 border border-4 rounded-match bg-white d-flex align-items-center border-match" style="min-height: 320px;">
+                <p class="fw-bold text-secondary fs-5 lh-base m-0" style="max-width: 580px;">
+                    A partir do painel de controle de sua conta, você pode ver seus matches recentes, gerenciar os detalhes da conta, etc.
+                </p>
+            </div>
+        </main>
+        
+    </div>
+</div>
+{% endblock %}
