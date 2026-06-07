@@ -9,6 +9,7 @@ from match_estagios.forms.verificacao import SolicitacaoVerificacaoForm
 from match_estagios.models.candidatura import Candidatura, CandidaturaStatus
 from match_estagios.models.faculdade import Faculdade
 from match_estagios.models.user import User, UserRole, UserStatus
+from match_estagios.models.notificacao import Notificacao
 from match_estagios.models.vaga import Vaga, VagaStatus
 from match_estagios.models.verificacao import SolicitacaoStatus, SolicitacaoVerificacao
 from match_estagios.services.perfil_service import (
@@ -420,3 +421,60 @@ def ver_perfil_estudante(id_estudante):
     
     # Renderiza o template de perfil passando os dados do estudante encontrado
     return render_template("main/perfil_estudante.html", estudante=estudante)
+
+@main_bp.route("/notificacoes")
+@login_required
+def notificacoes():
+    form = BasicForm()
+    notificacoes_nao_lidas = (
+        Notificacao.query.filter_by(id_user=current_user.id_user, lida=False)
+        .order_by(Notificacao.data_criacao.desc())
+        .all()
+    )
+
+    notificacoes_lidas = (
+        Notificacao.query.filter_by(id_user=current_user.id_user, lida=True)
+        .order_by(Notificacao.data_criacao.desc())
+        .all()
+    )
+
+    return render_template(
+        "main/notificacoes.html",
+        form=form,
+        notificacoes_nao_lidas=notificacoes_nao_lidas,
+        notificacoes_lidas=notificacoes_lidas,
+    )
+
+
+@main_bp.route("/notificacoes/<string:id_notificacao>/ler", methods=["POST"])
+@login_required
+def marcar_notificacao_lida(id_notificacao):
+    notificacao = Notificacao.query.get_or_404(id_notificacao)
+
+    if notificacao.id_user != current_user.id_user:
+        flash("Sem permissão.", "danger")
+        return redirect(url_for("main.notificacoes"))
+
+    notificacao.lida = True
+
+    db.session.commit()
+
+    return redirect(url_for("main.notificacoes"))
+
+
+@main_bp.route("/notificacoes/marcar-todas", methods=["POST"])
+@login_required
+def marcar_notificacoes_lida():
+    notificacoes = Notificacao.query.filter_by(
+        id_user=current_user.id_user,
+        lida=False,
+    ).all()
+
+    for notificacao in notificacoes:
+        notificacao.lida = True
+
+    db.session.commit()
+
+    flash("Todas as notificações foram marcadas como lidas.", "success")
+
+    return redirect(url_for("main.notificacoes"))

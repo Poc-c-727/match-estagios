@@ -1,0 +1,64 @@
+{% macro render_notificacao(notificacao, form) %}
+
+<div
+    class="card shadow-sm border-0
+    {% if notificacao.lida %}
+        bg-light text-muted
+    {% endif %}
+
+    {% if not notificacao.lida %}
+        border-start border-4
+    {% endif %}
+
+    border-{{ notificacao.tipo.value }}
+"
+>
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h5 class="card-title mb-1">
+                    {{ notificacao.titulo }}
+                </h5>
+
+                <p class="card-text mb-2">
+                    {{ notificacao.mensagem}}
+                </p>
+
+                <small class="text-muted">
+                    {{ notificacao.data_criacao.strftime("%d/%m/%Y às %H:%M") }}
+                </small>
+            </div>
+
+            {% if notificacao.lida %}
+                <span class="badge bg-secondary">
+                    Lida
+                </span>
+            {% else %}
+                <div class="d-flex flex-column align-items-end gap-2">
+                    <span class="badge bg-{{ notificacao.tipo.value }}">
+                        Nova
+                    </span>
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'main.marcar_notificacao_lida',
+                            id_notificacao=notificacao.id_notificacao
+                        ) }}"
+                    >
+                        {{ form.hidden_tag() }}
+
+                        <button
+                            type="submit"
+                            class="btn btn-sm btn-outline-primary"
+                        >
+                            Marcar como lida
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endmacro %}
