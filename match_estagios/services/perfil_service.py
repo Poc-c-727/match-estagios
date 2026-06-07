@@ -38,6 +38,11 @@ def populate_form(form, user):
                 form.data_nascimento.data = estudante.data_nascimento
                 form.endereco.data = estudante.endereco
                 form.telefone.data = estudante.telefone
+                form.curso.data = estudante.curso
+                form.semestre.data = estudante.semestre
+                form.disponibilidade.data = estudante.disponibilidade
+                form.area_interesse.data = estudante.area_interesse
+                form.curriculo_texto.data = estudante.curriculo_texto
 
         case UserRole.EMPRESA:
             empresa = user.empresa
@@ -76,6 +81,11 @@ def save_form(form, user):
                 estudante.data_nascimento = form.data_nascimento.data
                 estudante.endereco = form.endereco.data
                 estudante.telefone = form.telefone.data
+                estudante.curso = form.curso.data
+                estudante.semestre = form.semestre.data
+                estudante.disponibilidade = form.disponibilidade.data
+                estudante.area_interesse = form.area_interesse.data
+                estudante.curriculo_texto = form.curriculo_texto.data
 
         case UserRole.EMPRESA:
             empresa = user.empresa

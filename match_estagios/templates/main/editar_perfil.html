@@ -11,8 +11,6 @@
 <form method="POST">
     {{ form.hidden_tag() }}
 
-    <!-- Campos comuns -->
-
     <div class="mb-3">
         {{ form.name.label(class="form-label") }}
         {{ form.name(class="form-control") }}
@@ -24,8 +22,6 @@
     </div>
 
     {% if current_user.status.value == "verificado" %}
-        <!-- Estudante -->
-
         {% if current_user.role.value == "estudante" %}
             <div class="mb-3">
                 {{ form.cpf.label(class="form-label") }}
@@ -46,10 +42,52 @@
                 {{ form.telefone.label(class="form-label") }}
                 {{ form.telefone(class="form-control") }}
             </div>
+
+            <div class="row g-3">
+                <div class="col-md-6 mb-3">
+                    {{ form.curso.label(class="form-label fw-bold") }}
+                    {{ form.curso(class="form-select") }}
+                    {% for error in form.curso.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    {{ form.semestre.label(class="form-label fw-bold") }}
+                    {{ form.semestre(class="form-select") }}
+                    {% for error in form.semestre.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6 mb-3">
+                    {{ form.disponibilidade.label(class="form-label fw-bold") }}
+                    {{ form.disponibilidade(class="form-select") }}
+                    {% for error in form.disponibilidade.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    {{ form.area_interesse.label(class="form-label fw-bold") }}
+                    {{ form.area_interesse(class="form-select") }}
+                    {% for error in form.area_interesse.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                {{ form.curriculo_texto.label(class="form-label fw-bold") }}
+                {{ form.curriculo_texto(class="form-control", rows="6", placeholder="Cole aqui suas experiências, resumo profissional e principais competências...") }}
+                {% for error in form.curriculo_texto.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
         {% endif %}
 
-
-        <!-- Empresa -->
 
         {% if current_user.role.value == "empresa" %}
             <div class="mb-3">
@@ -79,8 +117,6 @@
         {% endif %}
 
 
-        <!-- Faculdade -->
-
         {% if current_user.role.value == "faculdade" %}
             <div class="mb-3">
                 {{ form.cnpj.label(class="form-label") }}
@@ -100,7 +136,7 @@
 
     {% endif %}
 
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 mt-4">
         {{ form.salvar(class="btn btn-success") }}
 
         <a

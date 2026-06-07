@@ -43,6 +43,8 @@ def criar_vaga():
             modalidade=VagaModalidade[form.modalidade.data],
             status=VagaStatus[form.status.data],
             id_empresa=current_user.empresa.id_empresa,
+            area=form.area.data,                 
+            disponibilidade=form.disponibilidade.data  
         )
 
         db.session.add(vaga)

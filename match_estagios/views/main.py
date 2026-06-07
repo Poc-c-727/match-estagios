@@ -8,8 +8,8 @@ from match_estagios.forms.basic_form import BasicForm
 from match_estagios.forms.verificacao import SolicitacaoVerificacaoForm
 from match_estagios.models.candidatura import Candidatura, CandidaturaStatus
 from match_estagios.models.faculdade import Faculdade
+from match_estagios.models.user import User, UserRole, UserStatus
 from match_estagios.models.notificacao import Notificacao
-from match_estagios.models.user import UserRole, UserStatus
 from match_estagios.models.vaga import Vaga, VagaStatus
 from match_estagios.models.verificacao import SolicitacaoStatus, SolicitacaoVerificacao
 from match_estagios.services.perfil_service import (
@@ -40,7 +40,7 @@ def sobre():
 @main_bp.route("/dashboard")
 @login_required
 def dashboard():
-    return f"Bem-vindo, {current_user.name}"
+    return render_template("index_logged.html")
 
 
 @main_bp.route("/perfil")
@@ -126,7 +126,24 @@ def solicitar_verificacao():
 @main_bp.route("/vagas")
 @login_required
 def listar_vagas():
-    vagas = Vaga.query.filter_by(status=VagaStatus.ABERTA).all()
+    # 1. Captura os parâmetros da URL
+    filtro_area = request.args.get("area_interesse")
+    filtro_disponibilidade = request.args.get("disponibilidade")
+
+    # 2. Query base: começa trazendo absolutamente todas as vagas com status ABERTA
+    query = Vaga.query.filter_by(status=VagaStatus.ABERTA)
+
+    # 3. Só aplica o filtro se a variável existir E não for uma string vazia 
+    if filtro_area and filtro_area.strip() != "":
+        query = query.filter(Vaga.area == filtro_area)
+
+    # 4. Mesma segurança para a disponibilidade
+    if filtro_disponibilidade and filtro_disponibilidade.strip() != "":
+        query = query.filter(Vaga.disponibilidade == filtro_disponibilidade)
+
+    # 5. Traz os resultados ordenados
+    vagas = query.order_by(Vaga.id_vaga.desc()).all()
+
     return render_template("main/vagas.html", vagas=vagas)
 
 
@@ -161,9 +178,11 @@ def candidatar(id):
         return redirect(url_for("main.detalhes_vaga", id=id))
 
     vaga = Vaga.query.get_or_404(id)
+    id_estudante = current_user.estudante.id_estudante
 
+    # 1. Verifica se a candidatura tradicional já existe
     candidatura_existente = Candidatura.query.filter_by(
-        id_estudante=current_user.estudante.id_estudante,
+        id_estudante=id_estudante,
         id_vaga=vaga.id_vaga,
     ).first()
 
@@ -171,15 +190,38 @@ def candidatar(id):
         flash("Você já se candidatou para esta vaga.", "warning")
         return redirect(url_for("main.detalhes_vaga", id=id))
 
+    # 2. Cria a candidatura tradicional
     candidatura = Candidatura(
-        id_estudante=current_user.estudante.id_estudante,
+        id_estudante=id_estudante,
         id_vaga=vaga.id_vaga,
     )
-
     db.session.add(candidatura)
+
+    # 3. SALVA O LIKE DO ESTUDANTE NA TABELA DE LIKES
+    like_estudante = Like.query.filter_by(
+        id_vaga=vaga.id_vaga,
+        id_estudante=id_estudante,
+        quem_curtiu='ESTUDANTE'
+    ).first()
+
+    if not like_estudante:
+        novo_like = Like(id_vaga=vaga.id_vaga, id_estudante=id_estudante, quem_curtiu='ESTUDANTE')
+        db.session.add(novo_like)
+
+    # 4. CHECA SE A EMPRESA JÁ TINHA CURTIDO ESTE ESTUDANTE ANTES
+    empresa_ja_curtiu = Like.query.filter_by(
+        id_vaga=vaga.id_vaga,
+        id_estudante=id_estudante,
+        quem_curtiu='EMPRESA'
+    ).first()
+
     db.session.commit()
 
-    flash("Candidatura realizada com sucesso.", "success")
+    # 5. Exibe a mensagem correspondente
+    if empresa_ja_curtiu:
+        flash("DEU MATCH! A empresa dona desta vaga já tinha se interessado pelo seu perfil!", "success")
+    else:
+        flash("Candidatura realizada com sucesso! Se a empresa curtir você de volta, vocês darão Match.", "success")
 
     return redirect(url_for("main.detalhes_vaga", id=id))
 
@@ -224,6 +266,161 @@ def cancelar_candidatura(id_candidatura):
 
     return redirect(url_for("main.minhas_candidaturas"))
 
+@main_bp.route("/candidatos")
+@login_required
+@roles_required(UserRole.EMPRESA)
+def listar_candidatos():
+    # 1. Captura os parâmetros vindos da URL (?curso=...&semestre=...&disponibilidade=...)
+    filtro_curso = request.args.get("curso")
+    filtro_semestre = request.args.get("semestre")
+    filtro_disponibilidade = request.args.get("disponibilidade")
+
+    # 2. Cria a query base mantendo seus filtros originais (Estudante + Verificado)
+    query = User.query.filter_by(
+        role=UserRole.ESTUDANTE, 
+        status=UserStatus.VERIFICADO
+    )
+
+    # 3. Faz o JOIN com a tabela do Estudante para liberarmos o acesso às colunas dele
+    # O SQLAlchemy geralmente deduz a FK sozinho se houver apenas um relacionamento,
+    # mas você pode usar query = query.join(Estudante) tranquilamente.
+    query = query.join(Estudante)
+
+    # 4. Condições dinâmicas (só entram se o usuário selecionou algo e removem espaços vazios)
+    if filtro_curso and filtro_curso.strip() != "":
+        query = query.filter(Estudante.curso == filtro_curso)
+
+    if filtro_semestre and filtro_semestre.strip() != "":
+        query = query.filter(Estudante.semestre == filtro_semestre)
+
+    if filtro_disponibilidade and filtro_disponibilidade.strip() != "":
+        query = query.filter(Estudante.disponibilidade == filtro_disponibilidade)
+
+    # 5. Executa a query final de candidatos
+    candidatos = query.all()
+    
+    # 6. Mantém a sua lógica intacta de buscar as vagas da empresa logada
+    vagas_empresa = []
+    if current_user.empresa:
+        vagas_empresa = Vaga.query.filter_by(
+            id_empresa=current_user.empresa.id_empresa, 
+            status=VagaStatus.ABERTA
+        ).all()
+    
+    # 7. Renderiza passando tudo o que o seu template espera
+    return render_template(
+        "main/candidatos.html", 
+        candidatos=candidatos, 
+        vagas_empresa=vagas_empresa, 
+        vaga=None
+    )
+
+#ROTA COM CONTEXTO DE VAGA (Para a busca ativa/discovery por vaga)
+@main_bp.route("/vagas/<id_vaga>/candidatos")
+@login_required
+@roles_required(UserRole.EMPRESA)
+def listar_candidatos_por_vaga(id_vaga):
+    vaga = Vaga.query.get_or_404(id_vaga)
+    candidatos = User.query.filter_by(
+        role=UserRole.ESTUDANTE, 
+        status=UserStatus.VERIFICADO
+    ).all()
+    
+    return render_template("main/candidatos.html", candidatos=candidatos, vaga=vaga)
+
+from match_estagios.models.like import Like 
+from match_estagios.models.vaga import Vaga # Certifique-se de importar o modelo de Vaga se necessário
+
+# 1. Mudamos a URL para receber também o id_vaga do contexto onde a empresa está navegando
+@main_bp.route("/vagas/<id_vaga>/candidatos/<id_estudante>/curtir", methods=["POST"])
+@login_required
+@roles_required(UserRole.EMPRESA)
+def curtir_candidato(id_vaga, id_estudante):
+    
+    # 2. Verifica se a empresa já curtiu esse candidato NESTA VAGA antes (para não duplicar)
+    ja_curtiu = Like.query.filter_by(
+        id_vaga=id_vaga, 
+        id_estudante=id_estudante, 
+        quem_curtiu='EMPRESA'
+    ).first()
+
+    if ja_curtiu:
+        flash("Você já curtiu este candidato para esta vaga!", "info")
+        # Ajuste o redirect para onde você preferir (ex: a lista de candidatos daquela vaga)
+        return redirect(url_for("main.listar_candidatos", id_vaga=id_vaga))
+
+    # 3. O SEGREDO DO MATCH: O estudante já curtiu ESSA VAGA específica antes?
+    estudante_ja_curtiu = Like.query.filter_by(
+        id_vaga=id_vaga, 
+        id_estudante=id_estudante, 
+        quem_curtiu='ESTUDANTE'
+    ).first()
+
+    # 4. Salva o novo like da empresa no banco usando id_vaga
+    novo_like = Like(id_vaga=id_vaga, id_estudante=id_estudante, quem_curtiu='EMPRESA')
+    db.session.add(novo_like)
+
+    if estudante_ja_curtiu:
+        # SE OS DOIS SE CURTIRAM NA MESMA VAGA: DEU MATCH!
+        db.session.commit()
+        flash("Deu MATCH! O candidato também se interessou por esta vaga!", "success")
+    else:
+        # Se só a empresa curtiu, salva silenciosamente
+        db.session.commit()
+        flash("Candidato curtido! Se ele curtir esta vaga de volta, vocês darão Match.", "success")
+
+    return redirect(url_for("main.listar_candidatos", id_vaga=id_vaga))
+
+from match_estagios.models.like import Like
+from match_estagios.models.vaga import Vaga
+from match_estagios.models.estudante import Estudante
+from sqlalchemy import and_
+
+@main_bp.route("/matches")
+@login_required
+def ver_matches():
+    # Criamos um apelido (alias) para a tabela de likes para poder cruzá-la com ela mesma
+    LikeEmpresa = db.aliased(Like)
+    
+    # Base da consulta: junta as tabelas para trazer o Like, os dados da Vaga e os dados do Estudante
+    matches_query = db.session.query(Like, Vaga, Estudante).join(
+        Vaga, Like.id_vaga == Vaga.id_vaga
+    ).join(
+        Estudante, Like.id_estudante == Estudante.id_estudante
+    ).join(
+        LikeEmpresa,
+        and_(
+            Like.id_vaga == LikeEmpresa.id_vaga,
+            Like.id_estudante == LikeEmpresa.id_estudante,
+            Like.quem_curtiu == 'ESTUDANTE',    # Lado do estudante
+            LikeEmpresa.quem_curtiu == 'EMPRESA' # Lado da empresa
+        )
+    )
+
+    # 🎛️ FILTRAGEM DINÂMICA POR USUÁRIO LOGADO
+    if current_user.role.name == 'ESTUDANTE':
+        # Se for estudante, mostra apenas os matches que pertencem ao ID dele
+        matches = matches_query.filter(Like.id_estudante == current_user.estudante.id_estudante).all()
+        
+    elif current_user.role.name == 'EMPRESA':
+        # Se for empresa, pega o ID de todas as vagas dela e traz os matches dessas vagas
+        ids_vagas_empresa = [v.id_vaga for v in current_user.empresa.vagas]
+        matches = matches_query.filter(Like.id_vaga.in_(ids_vagas_empresa)).all()
+        
+    else:
+        matches = []
+
+    return render_template("main/matches.html", matches=matches)
+
+@main_bp.route("/perfil/estudante/<id_estudante>")
+@login_required
+@roles_required(UserRole.EMPRESA) # Garante que só empresas vejam os perfis
+def ver_perfil_estudante(id_estudante):
+    # Busca o estudante pelo ID da rota ou retorna erro 404 se não existir
+    estudante = Estudante.query.get_or_404(id_estudante)
+    
+    # Renderiza o template de perfil passando os dados do estudante encontrado
+    return render_template("main/perfil_estudante.html", estudante=estudante)
 
 @main_bp.route("/notificacoes")
 @login_required
