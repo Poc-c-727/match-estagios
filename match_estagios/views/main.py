@@ -125,7 +125,24 @@ def solicitar_verificacao():
 @main_bp.route("/vagas")
 @login_required
 def listar_vagas():
-    vagas = Vaga.query.filter_by(status=VagaStatus.ABERTA).all()
+    # 1. Captura os parâmetros da URL
+    filtro_area = request.args.get("area_interesse")
+    filtro_disponibilidade = request.args.get("disponibilidade")
+
+    # 2. Query base: começa trazendo absolutamente todas as vagas com status ABERTA
+    query = Vaga.query.filter_by(status=VagaStatus.ABERTA)
+
+    # 3. Só aplica o filtro se a variável existir E não for uma string vazia 
+    if filtro_area and filtro_area.strip() != "":
+        query = query.filter(Vaga.area == filtro_area)
+
+    # 4. Mesma segurança para a disponibilidade
+    if filtro_disponibilidade and filtro_disponibilidade.strip() != "":
+        query = query.filter(Vaga.disponibilidade == filtro_disponibilidade)
+
+    # 5. Traz os resultados ordenados
+    vagas = query.order_by(Vaga.id_vaga.desc()).all()
+
     return render_template("main/vagas.html", vagas=vagas)
 
 
@@ -201,7 +218,7 @@ def candidatar(id):
 
     # 5. Exibe a mensagem correspondente
     if empresa_ja_curtiu:
-        flash("🔥 DEU MATCH! A empresa dona desta vaga já tinha se interessado pelo seu perfil!", "success")
+        flash("DEU MATCH! A empresa dona desta vaga já tinha se interessado pelo seu perfil!", "success")
     else:
         flash("Candidatura realizada com sucesso! Se a empresa curtir você de volta, vocês darão Match.", "success")
 
@@ -252,17 +269,50 @@ def cancelar_candidatura(id_candidatura):
 @login_required
 @roles_required(UserRole.EMPRESA)
 def listar_candidatos():
-    candidatos = User.query.filter_by(
+    # 1. Captura os parâmetros vindos da URL (?curso=...&semestre=...&disponibilidade=...)
+    filtro_curso = request.args.get("curso")
+    filtro_semestre = request.args.get("semestre")
+    filtro_disponibilidade = request.args.get("disponibilidade")
+
+    # 2. Cria a query base mantendo seus filtros originais (Estudante + Verificado)
+    query = User.query.filter_by(
         role=UserRole.ESTUDANTE, 
         status=UserStatus.VERIFICADO
-    ).all()
+    )
+
+    # 3. Faz o JOIN com a tabela do Estudante para liberarmos o acesso às colunas dele
+    # O SQLAlchemy geralmente deduz a FK sozinho se houver apenas um relacionamento,
+    # mas você pode usar query = query.join(Estudante) tranquilamente.
+    query = query.join(Estudante)
+
+    # 4. Condições dinâmicas (só entram se o usuário selecionou algo e removem espaços vazios)
+    if filtro_curso and filtro_curso.strip() != "":
+        query = query.filter(Estudante.curso == filtro_curso)
+
+    if filtro_semestre and filtro_semestre.strip() != "":
+        query = query.filter(Estudante.semestre == filtro_semestre)
+
+    if filtro_disponibilidade and filtro_disponibilidade.strip() != "":
+        query = query.filter(Estudante.disponibilidade == filtro_disponibilidade)
+
+    # 5. Executa a query final de candidatos
+    candidatos = query.all()
     
+    # 6. Mantém a sua lógica intacta de buscar as vagas da empresa logada
     vagas_empresa = []
     if current_user.empresa:
-        vagas_empresa = Vaga.query.filter_by(id_empresa=current_user.empresa.id_empresa, status=VagaStatus.ABERTA).all()
+        vagas_empresa = Vaga.query.filter_by(
+            id_empresa=current_user.empresa.id_empresa, 
+            status=VagaStatus.ABERTA
+        ).all()
     
-    return render_template("main/candidatos.html", candidatos=candidatos, vagas_empresa=vagas_empresa, vaga=None)
-
+    # 7. Renderiza passando tudo o que o seu template espera
+    return render_template(
+        "main/candidatos.html", 
+        candidatos=candidatos, 
+        vagas_empresa=vagas_empresa, 
+        vaga=None
+    )
 
 #ROTA COM CONTEXTO DE VAGA (Para a busca ativa/discovery por vaga)
 @main_bp.route("/vagas/<id_vaga>/candidatos")
@@ -312,7 +362,7 @@ def curtir_candidato(id_vaga, id_estudante):
     if estudante_ja_curtiu:
         # SE OS DOIS SE CURTIRAM NA MESMA VAGA: DEU MATCH!
         db.session.commit()
-        flash("🔥 Deu MATCH! O candidato também se interessou por esta vaga!", "success")
+        flash("Deu MATCH! O candidato também se interessou por esta vaga!", "success")
     else:
         # Se só a empresa curtiu, salva silenciosamente
         db.session.commit()
@@ -360,3 +410,13 @@ def ver_matches():
         matches = []
 
     return render_template("main/matches.html", matches=matches)
+
+@main_bp.route("/perfil/estudante/<id_estudante>")
+@login_required
+@roles_required(UserRole.EMPRESA) # Garante que só empresas vejam os perfis
+def ver_perfil_estudante(id_estudante):
+    # Busca o estudante pelo ID da rota ou retorna erro 404 se não existir
+    estudante = Estudante.query.get_or_404(id_estudante)
+    
+    # Renderiza o template de perfil passando os dados do estudante encontrado
+    return render_template("main/perfil_estudante.html", estudante=estudante)

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil de {{ estudante.user.name }} | Match Estágios{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="mb-4">
+        <a href="javascript:history.back()" class="btn btn-link text-match p-0 fw-bold text-decoration-none">
+            ← Voltar para Candidatos
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-4">
+            <div class="p-4 border rounded-3 bg-white text-center shadow-sm">
+                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#adb5bd" class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                    </svg>
+                </div>
+                
+                <h4 class="fw-bold text-dark text-uppercase mb-1">{{ estudante.user.name }}</h4>
+                <p class="text-secondary fw-semibold mb-4">{{ estudante.curso if estudante.curso else 'Estudante' }}</p>
+                
+                <hr class="text-muted">
+                
+                <div class="text-start mt-4">
+                    <h6 class="fw-bold text-dark text-uppercase small mb-3">Informações de Contato</h6>
+                    
+                    <p class="mb-2 small text-muted">
+                        <strong>E-mail:</strong><br>
+                        <span class="text-dark">{{ estudante.user.email }}</span>
+                    </p>
+                    
+                    <p class="mb-0 small text-muted">
+                        <strong>Telefone:</strong><br>
+                        <span class="text-dark">{{ estudante.telefone if estudante.telefone else 'Não informado' }}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-8">
+            <div class="p-4 border rounded-3 bg-white shadow-sm h-100">
+                <h4 class="fw-bold text-match mb-4 text-uppercase">Ficha Acadêmica</h4>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <label class="small fw-bold text-secondary text-uppercase d-block">Semestre Atual</label>
+                        <span class="fs-5 fw-semibold text-dark">{{ estudante.semestre if estudante.semestre else '-' }}º Semestre</span>
+                    </div>
+                    <div class="col-6">
+                        <label class="small fw-bold text-secondary text-uppercase d-block">Disponibilidade</label>
+                        <span class="fs-5 fw-semibold text-dark">{{ estudante.disponibilidade if estudante.disponibilidade else 'Não informada' }}</span>
+                    </div>
+                </div>
+
+                <hr class="text-muted mb-4">
+
+                <h5 class="fw-bold text-dark mb-3 text-uppercase small">Sobre o Candidato / Resumo Profissional</h5>
+                <p class="text-secondary mb-4">
+                    {% if estudante.curriculo_texto %}
+                        {{ estudante.curriculo_texto }}
+                    {% else %}
+                        O candidato ainda não cadastrou um currículo profissional em texto, mas está regularmente matriculado e verificado pela instituição de ensino para iniciar as atividades de estágio.
+                    {% endif %}
+                </p>
+
+                {# Se você tiver um campo para habilidades/tags no futuro, pode descomentar essa div:
+                <h5 class="fw-bold text-dark mb-3 text-uppercase small">Competências</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-light text-dark border px-3 py-2 rounded-2 fw-semibold">Proatividade</span>
+                    <span class="badge bg-light text-dark border px-3 py-2 rounded-2 fw-semibold">Trabalho em Equipe</span>
+                </div>
+                #}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -5,38 +5,34 @@
 {% block content %}
 <div class="container my-5">
     
-    <h1 class="text-center fw-bold text-match mb-5" style="font-size: 3rem; letter-spacing: 1px;">VAGAS</h1>
+    <h1 class="text-center fw-bold text-match mb-5">VAGAS</h1>
 
-    <div class="d-flex flex-wrap align-items-center gap-3 mb-5 w-100">
-        <span class="fw-bold text-secondary text-uppercase me-2" style="letter-spacing: 0.5px;">Filtre por:</span>
+    <form method="GET" action="{{ url_for('main.listar_vagas') }}" class="d-flex flex-wrap align-items-center gap-3 mb-5 w-100">
+        <span class="fw-bold text-secondary text-uppercase me-2">Filtre por:</span>
         
-        <div class="dropdown">
-            <button class="btn btn-match px-4 py-2 rounded-3 dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
-                Selecione a área
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Tecnologia</a></li>
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Administração</a></li>
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Design</a></li>
-            </ul>
+        <div>
+            <select name="area_interesse" class="form-select px-4 py-2 rounded-3 fw-semibold backend-filter" onchange="this.form.submit()">
+                <option value="">Selecione a área...</option>
+                <option value="Tecnologia" {% if request.args.get('area_interesse') == 'Tecnologia' %}selected{% endif %}>Tecnologia</option>
+                <option value="Administração" {% if request.args.get('area_interesse') == 'Administração' %}selected{% endif %}>Administração</option>
+                <option value="Design" {% if request.args.get('area_interesse') == 'Design' %}selected{% endif %}>Design</option>
+            </select>
         </div>
 
-        <div class="dropdown">
-            <button class="btn btn-match px-4 py-2 rounded-3 dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
-                Selecione a disponibilidade
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Matutino</a></li>
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Vespertino</a></li>
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Noturno</a></li>
-            </ul>
+        <div>
+            <select name="disponibilidade" class="form-select px-4 py-2 rounded-3 fw-semibold backend-filter" onchange="this.form.submit()">
+                <option value="">Selecione a disponibilidade...</option>
+                <option value="Matutino" {% if request.args.get('disponibilidade') == 'Matutino' %}selected{% endif %}>Matutino</option>
+                <option value="Vespertino" {% if request.args.get('disponibilidade') == 'Vespertino' %}selected{% endif %}>Vespertino</option>
+                <option value="Noturno" {% if request.args.get('disponibilidade') == 'Noturno' %}selected{% endif %}>Noturno</option>
+            </select>
         </div>
 
-        <button class="btn btn-outline-match px-4 py-2 rounded-3 fw-semibold">
+        <a href="{{ url_for('main.listar_vagas') }}" class="btn btn-outline-match px-4 py-2 rounded-3 fw-semibold text-decoration-none">
             Limpar filtros
-        </button>
+        </a>
 
-        {% if current_user.is_authenticated and current_user.empresa %}
+        {% if current_user.is_authenticated and current_user.role.value == 'empresa' %}
             <a href="{{ url_for('company.criar_vaga') }}" class="btn btn-match px-4 py-2 rounded-3 fw-bold d-flex align-items-center gap-2 shadow-sm ms-auto">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
@@ -44,7 +40,7 @@
                 Anunciar nova vaga
             </a>
         {% endif %}
-    </div>
+    </form>
 
     <div class="row g-4">
         {% for vaga in vagas %}
@@ -52,14 +48,14 @@
             <div class="p-4 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-sm">
                 
                 <div class="d-flex align-items-center gap-3 mb-4">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 75px; height: 75px; flex-shrink: 0;">
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#adb5bd" class="bi bi-building" viewBox="0 0 16 16">
                             <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 8.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
                             <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z"/>
                         </svg>
                     </div>
                     <div>
-                        <h5 class="fw-bold text-dark m-0 mb-1 text-uppercase" style="font-size: 1.05rem;">
+                        <h5 class="fw-bold text-dark m-0 mb-1 text-uppercase">
                             {{ vaga.titulo if vaga.titulo else "NOME DA VAGA" }}
                         </h5>
                         <p class="text-secondary m-0 small fw-semibold">
@@ -75,7 +71,7 @@
 
                     {% if current_user.role.name == 'EMPRESA' %}
                         <a href="{{ url_for('main.listar_candidatos_por_vaga', id_vaga=vaga.id_vaga) }}" class="btn btn-match fw-bold">
-                            Ver candidatos para esta vaga 🔍
+                            Ver candidatos
                         </a>
                     {% endif %}
 

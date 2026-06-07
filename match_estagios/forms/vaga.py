@@ -26,4 +26,26 @@ class VagaForm(FlaskForm):
         validators=[DataRequired()],
     )
 
+    area = SelectField(
+        "Área da Vaga",
+        choices=[
+            ("", "Selecione a área..."), # Opção vazia padrão
+            ("Tecnologia", "Tecnologia"),
+            ("Administração", "Administração"),
+            ("Design", "Design")
+        ],
+        validators=[DataRequired(message="Por favor, selecione uma área.")]
+    )
+
+    disponibilidade = SelectField(
+        "Disponibilidade / Período",
+        choices=[
+            ("", "Selecione a disponibilidade..."), # Opção vazia padrão
+            ("Matutino", "Matutino"),
+            ("Vespertino", "Vespertino"),
+            ("Noturno", "Noturno")
+        ],
+        validators=[DataRequired(message="Por favor, selecione a disponibilidade.")]
+    )
+
     submit = SubmitField("Criar vaga")

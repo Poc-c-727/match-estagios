@@ -8,45 +8,41 @@
 
 <div class="container my-5">
     
-    <h1 class="text-center fw-bold text-match mb-5" style="font-size: 3rem; letter-spacing: 1px;">CANDIDATOS</h1>
+    <h1 class="text-center fw-bold text-match mb-5">CANDIDATOS</h1>
 
-    <div class="d-flex flex-wrap align-items-center gap-3 mb-5 justify-content-center justify-content-md-start">
-        <span class="fw-bold text-secondary text-uppercase me-2" style="letter-spacing: 0.5px;">Filtre por:</span>
+    <form method="GET" action="{{ url_for('main.listar_candidatos') }}" class="d-flex flex-wrap align-items-center gap-3 mb-5 justify-content-center justify-content-md-start w-100">
+        <span class="fw-bold text-secondary text-uppercase me-2">Filtre por:</span>
         
-        <div class="dropdown">
-            <button class="btn btn-match px-4 py-2 rounded-3 dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
-                Selecione o curso
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Análise e Des. de Sistemas</a></li>
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Engenharia de Software</a></li>
-            </ul>
+        <div>
+            <select name="curso" class="form-select px-4 py-2 rounded-3 fw-semibold" onchange="this.form.submit()">
+                <option value="">Selecione o curso...</option>
+                <option value="Análise e Des. de Sistemas" {% if request.args.get('curso') == 'Análise e Des. de Sistemas' %}selected{% endif %}>Análise e Des. de Sistemas</option>
+                <option value="Engenharia de Software" {% if request.args.get('curso') == 'Engenharia de Software' %}selected{% endif %}>Engenharia de Software</option>
+            </select>
         </div>
 
-        <div class="dropdown">
-            <button class="btn btn-match px-4 py-2 rounded-3 dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
-                Selecione o semestre
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">1º Semestre</a></li>
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">2º Semestre</a></li>
-            </ul>
+        <div>
+            <select name="semestre" class="form-select px-4 py-2 rounded-3 fw-semibold" onchange="this.form.submit()">
+                <option value="">Selecione o semestre...</option>
+                <option value="1" {% if request.args.get('semestre') == '1' %}selected{% endif %}>1º Semestre</option>
+                <option value="2" {% if request.args.get('semestre') == '2' %}selected{% endif %}>2º Semestre</option>
+                <option value="3" {% if request.args.get('semestre') == '3' %}selected{% endif %}>3º Semestre</option>
+            </select>
         </div>
 
-        <div class="dropdown">
-            <button class="btn btn-match px-4 py-2 rounded-3 dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
-                Selecione a disponibilidade
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Matutino</a></li>
-                <li><a class="dropdown-menu-item p-2 d-block text-decoration-none text-dark" href="#">Noturno</a></li>
-            </ul>
+        <div>
+            <select name="disponibilidade" class="form-select px-4 py-2 rounded-3 fw-semibold" onchange="this.form.submit()">
+                <option value="">Selecione a disponibilidade...</option>
+                <option value="Matutino" {% if request.args.get('disponibilidade') == 'Matutino' %}selected{% endif %}>Matutino</option>
+                <option value="Vespertino" {% if request.args.get('disponibilidade') == 'Vespertino' %}selected{% endif %}>Vespertino</option>
+                <option value="Noturno" {% if request.args.get('disponibilidade') == 'Noturno' %}selected{% endif %}>Noturno</option>
+            </select>
         </div>
 
-        <button class="btn btn-outline-match px-4 py-2 rounded-3 fw-semibold">
+        <a href="{{ url_for('main.listar_candidatos') }}" class="btn btn-outline-match px-4 py-2 rounded-3 fw-semibold text-decoration-none">
             Limpar filtros
-        </button>
-    </div>
+        </a>
+    </form>
 
     <div class="row g-4">
         {% for candidato in candidatos %}
@@ -54,13 +50,13 @@
             <div class="p-4 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-sm">
                 
                 <div class="d-flex align-items-center gap-3 mb-4">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 75px; height: 75px; flex-shrink: 0;">
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="#adb5bd" class="bi bi-person-fill" viewBox="0 0 16 16">
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                         </svg>
                     </div>
                     <div>
-                        <h5 class="fw-bold text-dark m-0 mb-1 text-uppercase" style="font-size: 1.05rem;">
+                        <h5 class="fw-bold text-dark m-0 mb-1 text-uppercase">
                             {{ candidato.name }}
                         </h5>
                         <p class="text-secondary m-0 small fw-semibold">
@@ -75,34 +71,39 @@
                 </div>
 
                 <div class="d-flex flex-column gap-2 w-100">
-                    <a href="{{ url_for('main.perfil') }}" class="btn btn-outline-match btn-sm fw-bold py-2 rounded-2 text-nowrap flex-grow-1">
+                    <a href="{{ url_for('main.ver_perfil_estudante', id_estudante=candidato.estudante.id_estudante) }}" class="btn btn-outline-match btn-sm fw-bold py-2 rounded-2 text-nowrap w-100">
                         Ver mais informações
                     </a>
                     
-                    <div class="d-flex gap-2 w-100 align-items-center">
-                        <!--SELETOR DE VAGA (Apenas se a rota não tiver um contexto fixo)  -->
-                        {% if not vaga and vagas_empresa %}
-                        <div class="mb-1">
-                            <label class="small fw-semibold text-secondary mb-1">Curtir para a vaga:</label>
-                            <!-- O select muda o id_vaga do form dinamicamente usando o 'data-candidato-id' -->
-                            <select class="form-select form-select-sm select-vaga-match" data-candidato-id="{{ candidato.estudante.id_estudante }}">
-                                <option value="" disabled selected>Escolha uma vaga...</option>
-                                {% for v in vagas_empresa %}
-                                    <option value="{{ v.id_vaga }}">{{ v.titulo }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Formulário dinâmico. Damos um id único para o JavaScript conseguir alterar a URL -->
-                        <form id="form-like-{{ candidato.estudante.id_estudante }}" action="{{ url_for('main.curtir_candidato', id_vaga='TEMP_VAGA', id_estudante=candidato.estudante.id_estudante) }}" method="POST" class="m-0">
+                    {% if vaga %}
+                        <form action="{{ url_for('main.curtir_candidato', id_vaga=vaga.id_vaga, id_estudante=candidato.estudante.id_estudante) }}" method="POST" class="m-0 w-100">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                            
-                            <button type="submit" class="btn btn-outline-match btn-sm fw-bold py-2 px-3 rounded-2 d-flex align-items-center justify-content-center gap-1 text-nowrap btn-curtir-submit" {% if not vaga %}disabled{% endif %}>
+                            <button type="submit" class="btn btn-outline-match btn-sm fw-bold py-2 w-100 rounded-2 d-flex align-items-center justify-content-center gap-1 text-nowrap">
                                 Curtir <span class="text-danger">❤️</span>
                             </button>
                         </form>
-                    </div>
+                    {% else %}
+                        <div class="w-100">
+                            {% if vagas_empresa %}
+                            <div class="mb-2">
+                                <label class="small fw-semibold text-secondary mb-1">Curtir para a vaga:</label>
+                                <select class="form-select form-select-sm select-vaga-match" data-candidato-id="{{ candidato.estudante.id_estudante }}">
+                                    <option value="" disabled selected>Escolha uma vaga...</option>
+                                    {% for v in vagas_empresa %}
+                                        <option value="{{ v.id_vaga }}">{{ v.titulo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+                            
+                            <form id="form-like-{{ candidato.estudante.id_estudante }}" action="{{ url_for('main.curtir_candidato', id_vaga='TEMP_VAGA', id_estudante=candidato.estudante.id_estudante) }}" method="POST" class="m-0">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-outline-match btn-sm fw-bold py-2 w-100 rounded-2 d-flex align-items-center justify-content-center gap-1 text-nowrap btn-curtir-submit" disabled>
+                                    Curtir <span class="text-danger">❤️</span>
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
                 </div>
         </div>
         {% else %}
