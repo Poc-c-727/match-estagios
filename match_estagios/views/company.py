@@ -10,6 +10,7 @@ from match_estagios.forms.basic_form import BasicForm
 from match_estagios.forms.delete import DeleteForm
 from match_estagios.forms.vaga import VagaForm
 from match_estagios.models.candidatura import Candidatura, CandidaturaStatus
+from match_estagios.models.notificacao import Notificacao, NotificacaoTipo
 from match_estagios.models.user import UserRole
 from match_estagios.models.vaga import Vaga, VagaModalidade, VagaStatus
 from match_estagios.utils.decorators import roles_required
@@ -42,6 +43,8 @@ def criar_vaga():
             modalidade=VagaModalidade[form.modalidade.data],
             status=VagaStatus[form.status.data],
             id_empresa=current_user.empresa.id_empresa,
+            area=form.area.data,                 
+            disponibilidade=form.disponibilidade.data  
         )
 
         db.session.add(vaga)
@@ -175,7 +178,28 @@ def atualizar_status_candidatura(id_candidatura):
             )
         )
 
-    candidatura.status = CandidaturaStatus[novo_status]
+    # Atualizia status da candidatura
+    status_enum = CandidaturaStatus[novo_status]
+    candidatura.status = status_enum
+
+    # Envia notificação para o candidato
+    if status_enum == CandidaturaStatus.APROVADO:
+        notificacao = Notificacao(
+            titulo="Candidatura aprovada",
+            mensagem=f"Você foi aprovado na vaga {candidatura.vaga.titulo}",
+            tipo=NotificacaoTipo.SUCCESS,
+            id_user=candidatura.estudante.user.id_user,
+        )
+        db.session.add(notificacao)
+
+    elif status_enum == CandidaturaStatus.RECUSADO:
+        notificacao = Notificacao(
+            titulo="Candidatura reprovada",
+            mensagem=f"Você não foi aprovado na vaga {candidatura.vaga.titulo}",
+            tipo=NotificacaoTipo.DANGER,
+            id_user=candidatura.estudante.user.id_user,
+        )
+        db.session.add(notificacao)
 
     db.session.commit()
 

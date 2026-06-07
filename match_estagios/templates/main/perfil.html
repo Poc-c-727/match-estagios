@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Meu Perfil{% endblock %}
+{% block title %}Meu perfil{% endblock %}
 
 {% block main_class %}container{% endblock %}
 
@@ -8,7 +8,7 @@
 
 <div class="mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Meu Perfil</h2>
+        <h2>Meu perfil</h2>
 
         {% if current_user.status.value == "pendente" %}
         <a href="{{ url_for('main.solicitar_verificacao') }}"
@@ -21,8 +21,6 @@
             Editar Perfil
         </a>
     </div>
-
-    <!-- Informações comuns -->
 
     <div class="card mb-4">
         <div class="card-header">
@@ -50,8 +48,6 @@
     </div>
 
     {% if current_user.status.value == "verificado" %}
-
-        <!-- Estudante -->
 
         {% if current_user.role.value == 'estudante' %}
             <div class="card mb-4">
@@ -81,10 +77,54 @@
                     </p>
                 </div>
             </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    Informações Acadêmicas
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Curso:</strong>
+                        {{ current_user.estudante.curso or "Não informado" }}
+                    </p>
+
+                    <p>
+                        <strong>Semestre:</strong>
+                        {% if current_user.estudante.semestre %}
+                            {{ current_user.estudante.semestre }}º Semestre
+                        {% else %}
+                            Não informado
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Disponibilidade:</strong>
+                        {{ current_user.estudante.disponibilidade or "Não informado" }}
+                    </p>
+
+                    <p>
+                        <strong>Área de Interesse:</strong>
+                        {{ current_user.estudante.area_interesse or "Não informado" }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    📄 Currículo Profissional
+                </div>
+                <div class="card-body">
+                    {% if current_user.estudante.curriculo_texto %}
+                        <p class="card-text text-muted">
+                            {{ current_user.estudante.curriculo_texto }}
+                        </p>
+                    {% else %}
+                        <p class="card-text text-muted italic">Nenhum currículo em texto cadastrado até o momento.</p>
+                    {% endif %}
+                </div>
+            </div>
         {% endif %}
 
-
-        <!-- Empresa -->
 
         {% if current_user.role.value == "empresa" %}
             <div class="card mb-4">
@@ -126,8 +166,6 @@
             </div>
         {% endif %}
 
-
-        <!-- Faculdade -->
 
         {% if current_user.role.value == "faculdade" %}
             <div class="card mb-4">

@@ -32,15 +32,24 @@ class Vaga(db.Model):
         db.String(36), db.ForeignKey("empresas.id_empresa"), nullable=False
     )
 
+    area = db.Column(db.String(100), nullable=True)
+    disponibilidade = db.Column(db.String(50), nullable=True)
+
     empresa = db.relationship("Empresa", backref="vagas")
     candidaturas = db.relationship(
         "Candidatura", back_populates="vaga", cascade="all, delete-orphan"
     )
 
-    def __init__(self, titulo, descricao, bolsa, modalidade, status, id_empresa):
+    # CONSTRUTOR ATUALIZADO:
+    # Definimos como None por padrão para não quebrar a criação de vagas antigas em testes ou seeders
+    def __init__(self, titulo, descricao, bolsa, modalidade, status, id_empresa, area=None, disponibilidade=None):
         self.titulo = titulo
         self.descricao = descricao
         self.bolsa = bolsa
         self.modalidade = modalidade
         self.status = status
         self.id_empresa = id_empresa
+        
+        # Inicializando os novos campos de filtro
+        self.area = area
+        self.disponibilidade = disponibilidade

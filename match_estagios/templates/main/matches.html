@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Meus Matches | Match Estágios{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    
+    <h1 class="text-center fw-bold text-match mb-5">
+        SEUS MATCHES
+    </h1>
+
+    <div class="row g-4 justify-content-center">
+        <!-- Desestruturação da tupla enviada pelo backend -->
+        {% for like, vaga, estudante in matches %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="p-4 border border-success rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-sm">
+                
+                <div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="badge bg-success text-uppercase px-3 py-2 rounded-pill fw-bold">
+                            Match! 🎯
+                        </span>
+                        <small class="text-muted fw-semibold">
+                            {{ like.data_criacao.strftime('%d/%m/%Y') if like.data_criacao else '' }}
+                        </small>
+                    </div>
+
+                    <h4 class="fw-bold text-dark mb-1 text-uppercase">
+                        Vaga: {{ vaga.titulo }}
+                    </h4>
+                    <p class="text-secondary small fw-bold mb-4">
+                        Empresa: {{ vaga.empresa.name if vaga.empresa else 'Empresa Cadastrada' }}
+                    </p>
+
+                    <hr class="text-muted">
+
+                    <div class="d-flex align-items-center gap-3 my-3">
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#198754" class="bi bi-person-check-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                                <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-dark m-0 small text-uppercase">Estudante</h6>
+                            <p class="m-0 text-muted small fw-semibold">{{ estudante.user.name if estudante.user else 'Nome do Estudante' }}</p>
+                            <p class="m-0 text-secondary text-muted">
+                                Contato: {{ estudante.telefone if estudante.telefone else 'Disponível no perfil' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    {% if current_user.role.name == 'EMPRESA' %}
+                        <a href="mailto:{{ estudante.user.email }}" class="btn btn-success btn-sm fw-bold py-2 w-100 rounded-2">
+                            Enviar E-mail para o Aluno ✉️
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('main.detalhes_vaga', id=vaga.id_vaga) }}" class="btn btn-outline-success btn-sm fw-bold py-2 w-100 rounded-2">
+                            Ver detalhes da Vaga Ganha
+                        </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+        {% else %}
+        <!-- Caso não tenha nenhum match no banco de dados para o usuário -->
+        <div class="col-12 text-center py-5">
+            <div class="mb-3">💔</div>
+            <p class="text-muted fs-5 fw-semibold">Nenhum match encontrado ainda.</p>
+            <p class="text-secondary small">Continue distribuindo likes para gerar conexões!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
